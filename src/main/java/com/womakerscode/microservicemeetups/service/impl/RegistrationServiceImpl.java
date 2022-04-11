@@ -7,7 +7,7 @@ import com.womakerscode.microservicemeetups.service.RegistrationService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (registration == null || registration.getId() == null) {
             throw new IllegalArgumentException("Registration id cannot be null");
         }
-        this.registrationRepository.delete(registration);
+        registrationRepository.delete(registration);
     }
 
     @Override
@@ -46,11 +46,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (registration == null || registration.getId() == null) {
             throw new IllegalArgumentException("Registration id cannot be null");
         }
-        return this.registrationRepository.save(registration);
+        return registrationRepository.save(registration);
     }
 
     @Override
-    public Page<Registration> find(Registration filter, PageRequest pageRequest) {
+    public Page<Registration> find(Registration filter, Pageable pageable) {
         Example<Registration> example = Example.of(filter,
                 ExampleMatcher
                         .matching()
@@ -58,7 +58,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                         .withIgnoreNullValues()
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
-        return registrationRepository.findAll(example, pageRequest);
+        return registrationRepository.findAll(example, pageable);
     }
 
     @Override

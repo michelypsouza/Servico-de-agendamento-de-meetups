@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -43,7 +43,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should save an registration")
-    public void saveStudent() throws BusinessException {
+    public void saveRegistration() throws BusinessException {
 
         // cenario
         Registration registration = createValidRegistration();
@@ -70,7 +70,9 @@ public class RegistrationServiceTest {
         Mockito.when(registrationRepository.existsByRegistration(Mockito.any())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable( () -> registrationService.save(registration));
-        assertThat(exception).isInstanceOf(BusinessException.class).hasMessage("Registration already created");
+        assertThat(exception)
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("Registration already created");
 
         Mockito.verify(registrationRepository, Mockito.never()).save(registration);
 
@@ -111,10 +113,11 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Should delete an student")
+    @DisplayName("Should delete an registration")
     public void deleteRegistrationTest() {
 
         Registration registration = Registration.builder().id(11).build();
+
         assertDoesNotThrow(() -> registrationService.delete(registration));
 
         Mockito.verify(registrationRepository, Mockito.times(1)).delete(registration);
@@ -144,6 +147,7 @@ public class RegistrationServiceTest {
 
     }
 
+    //TODO: Tirar duvida sobre teste ser feito com PageRequest ao inves de Pageable
     @Test
     @DisplayName("Should filter registrations must by properties")
     public void findRegistrationTest() {
@@ -179,13 +183,15 @@ public class RegistrationServiceTest {
         Mockito.when(registrationRepository.findByRegistration(registrationAttribute))
                 .thenReturn(Optional.of(Registration.builder().id(11).registration(registrationAttribute).build()));
 
-        Optional<Registration> registration = registrationService.getRegistrationByRegistrationAttribute(registrationAttribute);
+        Optional<Registration> registration = registrationService
+                .getRegistrationByRegistrationAttribute(registrationAttribute);
 
         assertThat(registration.isPresent()).isTrue();
         assertThat(registration.get().getId()).isEqualTo(11);
         assertThat(registration.get().getRegistration()).isEqualTo(registrationAttribute);
 
-        Mockito.verify(registrationRepository, Mockito.times(1)).findByRegistration(registrationAttribute);
+        Mockito.verify(registrationRepository, Mockito.times(1))
+                .findByRegistration(registrationAttribute);
 
     }
 
