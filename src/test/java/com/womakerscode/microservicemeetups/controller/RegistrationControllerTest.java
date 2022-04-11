@@ -2,6 +2,7 @@ package com.womakerscode.microservicemeetups.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationDTO;
+import com.womakerscode.microservicemeetups.controller.resource.RegistrationController;
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.RegistrationService;

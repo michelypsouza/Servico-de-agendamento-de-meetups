@@ -1,4 +1,4 @@
-package com.womakerscode.microservicemeetups.controller;
+package com.womakerscode.microservicemeetups.controller.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationDTO;

@@ -147,7 +147,6 @@ public class RegistrationServiceTest {
 
     }
 
-    //TODO: Tirar duvida sobre teste ser feito com PageRequest ao inves de Pageable
     @Test
     @DisplayName("Should filter registrations must by properties")
     public void findRegistrationTest() {
