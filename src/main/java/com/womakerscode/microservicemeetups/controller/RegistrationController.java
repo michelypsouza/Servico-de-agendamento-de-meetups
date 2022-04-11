@@ -1,5 +1,6 @@
 package com.womakerscode.microservicemeetups.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationDTO;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
@@ -13,10 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -75,8 +74,14 @@ public class RegistrationController {
     }
 
     @GetMapping
-    public Page<RegistrationDTO> find(RegistrationDTO dto, Pageable pageable) {
+    //public Page<RegistrationDTO> find(RegistrationDTO dto, Pageable pageable) {
+    public Page<RegistrationDTO> find(@RequestParam(required = false) Map<String,String> mapAttributesRegistration
+            , Pageable pageable) {
+
+        RegistrationDTO dto = attributesRegistrationToDTO(mapAttributesRegistration);
         Registration filter = modelMapper.map(dto, Registration.class);
+
+//        Registration filter = new Registration();
         Page<Registration> result = registrationService.find(filter, pageable);
 
         List<RegistrationDTO> list = result.getContent()
@@ -86,5 +91,11 @@ public class RegistrationController {
 
         return new PageImpl<RegistrationDTO>(list, pageable, result.getTotalElements());
     }
+
+    private RegistrationDTO attributesRegistrationToDTO(Map<String,String> mapAttributesRegistration) {
+        final ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(mapAttributesRegistration, RegistrationDTO.class);
+    }
+
 
 }

@@ -59,6 +59,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
         return registrationRepository.findAll(example, pageable);
+        //return registrationRepository.findAll(pageable);
     }
 
     @Override
