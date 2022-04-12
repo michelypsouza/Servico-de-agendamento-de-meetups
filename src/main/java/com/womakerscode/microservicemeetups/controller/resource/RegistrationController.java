@@ -61,6 +61,7 @@ public class RegistrationController {
 
     @PutMapping("{id}")
     public RegistrationDTO update(@PathVariable Integer id, RegistrationDTO registrationDTO) {
+
         return registrationService.getRegistrationById(id)
                 .map(registration -> {
                     registration.setName(registrationDTO.getName());
@@ -68,6 +69,7 @@ public class RegistrationController {
                             DateUtil.convertStringToLocalDate(registrationDTO.getDateOfRegistration()));
                     //registration.setDateOfRegistration(registrationDTO.getDateOfRegistration());
                     registration = registrationService.update(registration);
+
                     return modelMapper.map(registration, RegistrationDTO.class);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -80,8 +82,6 @@ public class RegistrationController {
 
         RegistrationDTO dto = attributesRegistrationToDTO(mapAttributesRegistration);
         Registration filter = modelMapper.map(dto, Registration.class);
-
-//        Registration filter = new Registration();
         Page<Registration> result = registrationService.find(filter, pageable);
 
         List<RegistrationDTO> list = result.getContent()
@@ -96,6 +96,5 @@ public class RegistrationController {
         final ObjectMapper mapper = new ObjectMapper();
         return mapper.convertValue(mapAttributesRegistration, RegistrationDTO.class);
     }
-
 
 }
