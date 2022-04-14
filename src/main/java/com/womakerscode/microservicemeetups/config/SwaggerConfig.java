@@ -35,7 +35,7 @@ public class SwaggerConfig {
     }
 
     private Contact contact() {
-        return new Contact("Womakerscode Michely Souza",
+        return new Contact("Michely Souza",
                 "https://www.linkedin.com/in/michely-prudencio-souza/",
                 "michely.psouza@gmail.com");
     }

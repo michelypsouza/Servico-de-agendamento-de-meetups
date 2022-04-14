@@ -10,7 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,7 +101,8 @@ public class RegistrationRepositoryTest {
     public static Registration createNewRegistration(String registration) {
         return Registration.builder()
                 .name("Michely Souza")
-                .dateOfRegistration(LocalDate.now())
+                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+//                .dateOfRegistration(LocalDate.now())
                 .registration(registration).build();
     }
 

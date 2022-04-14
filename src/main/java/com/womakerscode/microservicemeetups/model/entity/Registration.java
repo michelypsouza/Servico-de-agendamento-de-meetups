@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -25,9 +25,8 @@ public class Registration {
     @Column(name = "person_name")
     private String name;
 
-    //@JsonFormat(pattern = DateUtil.DATE_PATTERN_DEFAULT)
     @Column(name = "date_of_registration")
-    private LocalDate dateOfRegistration;
+    private Date dateOfRegistration;
 
     @Column
     private String registration;

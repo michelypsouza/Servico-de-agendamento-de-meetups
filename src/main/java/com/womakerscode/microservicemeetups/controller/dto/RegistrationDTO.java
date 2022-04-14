@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -20,10 +22,10 @@ public class RegistrationDTO {
     @NotEmpty(message = "The name cannot be empty")
     private String name;
 
-    @NotEmpty(message = "The date of registration cannot be empty")
-    @JsonFormat(pattern = DateUtil.DATE_PATTERN_DEFAULT)
-    //@Pattern(regexp = DateUtil.DATE_PATTERN_DEFAULT)
-    private String dateOfRegistration;
+    //@NotEmpty(message = "The date of registration cannot be empty")
+    @NotNull(message = "The date of registration cannot be empty")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
+    private Date dateOfRegistration;
 
     @NotEmpty
     private String registration;

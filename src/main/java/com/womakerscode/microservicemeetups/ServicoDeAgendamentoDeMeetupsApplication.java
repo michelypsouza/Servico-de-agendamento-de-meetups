@@ -41,7 +41,6 @@ public class ServicoDeAgendamentoDeMeetupsApplication {
         return varLocalDateToString;
     }
 
-
     public static void main(String[] args) {
         SpringApplication.run(ServicoDeAgendamentoDeMeetupsApplication.class, args);
     }

@@ -6,7 +6,6 @@ import com.womakerscode.microservicemeetups.controller.resource.RegistrationCont
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
-import com.womakerscode.microservicemeetups.util.DateUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,9 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Optional;
 
+import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
@@ -55,7 +56,8 @@ public class RegistrationControllerTest {
                 .id(101)
                 .name("Michely Souza")
                 //.dateOfRegistration(LocalDate.of(2022,4,1))
-                .dateOfRegistration(LocalDate.now())
+                //.dateOfRegistration(LocalDate.now())
+                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
                 .registration("001").build();
 
         // execucao
@@ -75,7 +77,9 @@ public class RegistrationControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(registrationDTOBuilder.getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration()))
+                //.andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration()))
+                .andExpect(jsonPath("dateOfRegistration")
+                        .value(formatDateToString(registrationDTOBuilder.getDateOfRegistration())))
                 .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
 
     }
@@ -128,7 +132,8 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 //.dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .dateOfRegistration(LocalDate.now())
+                //.dateOfRegistration(LocalDate.now())
+                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
                 .registration(createNewRegistration().getRegistration())
                 .build();
 
@@ -143,9 +148,8 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(registration.getId()))
                 .andExpect(jsonPath("name").value(registration.getName()))
-                //.andExpect(jsonPath("dateOfRegistration").value(registration.getDateOfRegistration()))
                 .andExpect(jsonPath("dateOfRegistration")
-                        .value(DateUtil.formatLocalDateToString(registration.getDateOfRegistration())))
+                        .value(formatDateToString(registration.getDateOfRegistration())))
                 .andExpect(jsonPath("registration").value(registration.getRegistration()));
 
     }
@@ -169,7 +173,8 @@ public class RegistrationControllerTest {
         return RegistrationDTO.builder()
                 //.id(101)
                 .name("Michely Souza")
-                .dateOfRegistration(DateUtil.formatLocalDateToString(LocalDate.now()))
+                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                //.dateOfRegistration(DateUtil.formatDateToString(LocalDate.now()))
                 //.dateOfRegistration(LocalDate.of(2022,4,1))
                 //.dateOfRegistration(LocalDate.now())
                 //.dateOfRegistration(DateTimeFormatter.ofPattern(DATE_PATTERN_DEFAULT).format(LocalDate.now()))

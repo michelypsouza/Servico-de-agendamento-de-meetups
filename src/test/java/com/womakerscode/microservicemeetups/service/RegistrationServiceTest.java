@@ -18,13 +18,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -55,9 +53,11 @@ public class RegistrationServiceTest {
         Registration savedRegistration = registrationService.save(registration);
 
         // assert
-        assertThat(savedRegistration.getId()).isEqualTo(101L);
+        assertThat(savedRegistration.getId()).isEqualTo(101);
         assertThat(savedRegistration.getName()).isEqualTo("Michely Souza");
-        assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
+        //assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
+        assertThat(formatDateToString(savedRegistration.getDateOfRegistration()))
+                .isEqualTo(formatDateToString(Calendar.getInstance(Locale.getDefault()).getTime()));
         assertThat(savedRegistration.getRegistration()).isEqualTo("001");
 
     }
@@ -156,7 +156,7 @@ public class RegistrationServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         List<Registration> listRegistrations = Arrays.asList(registration);
-        Page<Registration> page = new PageImpl<Registration>(Arrays.asList(registration),
+        Page<Registration> page = new PageImpl<>(Arrays.asList(registration),
                 PageRequest.of(0,10), 1);
 
         // execucao
@@ -198,7 +198,8 @@ public class RegistrationServiceTest {
         return Registration.builder()
                 .id(101)
                 .name("Michely Souza")
-                .dateOfRegistration(LocalDate.now())
+                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+//                .dateOfRegistration(LocalDate.now())
                 .registration("001")
                 .build();
     }

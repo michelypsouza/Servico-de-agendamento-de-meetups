@@ -65,9 +65,9 @@ public class RegistrationController {
         return registrationService.getRegistrationById(id)
                 .map(registration -> {
                     registration.setName(registrationDTO.getName());
-                    registration.setDateOfRegistration(
-                            DateUtil.convertStringToLocalDate(registrationDTO.getDateOfRegistration()));
-                    //registration.setDateOfRegistration(registrationDTO.getDateOfRegistration());
+//                    registration.setDateOfRegistration(
+//                            DateUtil.convertStringToDate(registrationDTO.getDateOfRegistration()));
+                    registration.setDateOfRegistration(registrationDTO.getDateOfRegistration());
                     registration = registrationService.update(registration);
 
                     return modelMapper.map(registration, RegistrationDTO.class);
