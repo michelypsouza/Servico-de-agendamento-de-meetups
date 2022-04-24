@@ -88,7 +88,7 @@ public class RegistrationControllerTest {
     @DisplayName("Should throw an exception when not have data enough for the test")
     public void createInvalidRegistrationTest() throws  Exception{
 
-        String json = new ObjectMapper().writeValueAsString(new Registration());
+        String json = new ObjectMapper().writeValueAsString(new RegistrationDTO());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(REGISTRATION_API)
@@ -108,7 +108,7 @@ public class RegistrationControllerTest {
         String json  = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(registrationService.save(any(Registration.class)))
-                .willThrow(new BusinessException("Registration already created!"));
+                .willThrow(new BusinessException("Registration already created"));
 
         MockHttpServletRequestBuilder request  = MockMvcRequestBuilders
                 .post(REGISTRATION_API)
@@ -119,7 +119,7 @@ public class RegistrationControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(1)))
-                .andExpect(jsonPath("errors[0]").value("Registration already created!"));
+                .andExpect(jsonPath("errors[0]").value("Registration already created"));
     }
 
     @Test
@@ -146,11 +146,11 @@ public class RegistrationControllerTest {
         mockMvc
                 .perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(registration.getId()))
-                .andExpect(jsonPath("name").value(registration.getName()))
+                .andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("name").value(createNewRegistration().getName()))
                 .andExpect(jsonPath("dateOfRegistration")
-                        .value(formatDateToString(registration.getDateOfRegistration())))
-                .andExpect(jsonPath("registration").value(registration.getRegistration()));
+                        .value(formatDateToString(createNewRegistration().getDateOfRegistration())))
+                .andExpect(jsonPath("registration").value(createNewRegistration().getRegistration()));
 
     }
 
@@ -171,7 +171,7 @@ public class RegistrationControllerTest {
 
     private RegistrationDTO createNewRegistration() {
         return RegistrationDTO.builder()
-                //.id(101)
+                .id(101)
                 .name("Michely Souza")
                 .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
                 //.dateOfRegistration(DateUtil.formatDateToString(LocalDate.now()))
