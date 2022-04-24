@@ -169,6 +169,82 @@ public class RegistrationControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Should delete the registration")
+    public void deleteRegistration() throws Exception {
+
+        BDDMockito.given(registrationService
+                .getRegistrationById(anyInt()))
+                .willReturn(Optional.of(Registration.builder().id(11).build()));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(REGISTRATION_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Should return resource not found when no registration is found to delete")
+    public void deleteNonExistentRegistrationTest() throws Exception {
+
+        BDDMockito.given(registrationService
+                .getRegistrationById(anyInt())).willReturn(Optional.empty());
+
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(REGISTRATION_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should update when registration info")
+    public void updateRegistrationTest() throws Exception {
+
+        Integer id = 11;
+        String json = new ObjectMapper().writeValueAsString(createNewRegistration());
+
+        Registration updatingRegistration =
+                Registration.builder()
+                        .id(id)
+                        .name("Mel Souza")
+                        .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                        .registration("323")
+                        .build();
+
+        BDDMockito.given(registrationService.getRegistrationById(anyInt()))
+                .willReturn(Optional.of(updatingRegistration));
+
+        Registration updatedRegistration =
+                Registration.builder()
+                        .id(id)
+                        .name("Michely Souza")
+                        .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                        .registration("323")
+                        .build();
+
+        BDDMockito.given(registrationService.update(updatingRegistration))
+                .willReturn(updatedRegistration);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(REGISTRATION_API.concat("/" + 1))
+                .contentType(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("name").value(createNewRegistration().getName()))
+                .andExpect(jsonPath("dateOfRegistration")
+                        .value(formatDateToString(createNewRegistration().getDateOfRegistration())))
+                .andExpect(jsonPath("registration").value("323"));
+    }
+
     private RegistrationDTO createNewRegistration() {
         return RegistrationDTO.builder()
                 .id(101)
