@@ -3,33 +3,19 @@ package com.womakerscode.microservicemeetups.controller.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.womakerscode.microservicemeetups.util.DateUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class RegistrationDTO {
+public class RegistrationFilterDTO {
 
     private Integer id;
 
-    @NotEmpty(message = "The name cannot be empty")
     private String name;
 
-    //@NotEmpty(message = "The date of registration cannot be empty")
-    @NotNull(message = "The date of registration cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     @JsonSerialize(as = Date.class)
     private Date dateOfRegistration;
 
-    @NotEmpty
     private String registration;
 
 }
