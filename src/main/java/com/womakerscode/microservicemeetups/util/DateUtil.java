@@ -40,4 +40,8 @@ public class DateUtil {
         }
     }
 
+    public static Date getDataAtual() {
+        return Calendar.getInstance(Locale.getDefault()).getTime();
+    }
+
 }

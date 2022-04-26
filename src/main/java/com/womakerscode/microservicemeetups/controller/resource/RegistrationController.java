@@ -6,6 +6,7 @@ import com.womakerscode.microservicemeetups.controller.dto.RegistrationDTO;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
 import com.womakerscode.microservicemeetups.util.DateUtil;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,16 +24,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/registration")
+@RequiredArgsConstructor
 public class RegistrationController {
 
-    private RegistrationService registrationService;
+    private final RegistrationService registrationService;
 
-    private ModelMapper modelMapper;
-
-    public RegistrationController (RegistrationService registrationService, ModelMapper modelMapper) {
-        this.registrationService = registrationService;
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

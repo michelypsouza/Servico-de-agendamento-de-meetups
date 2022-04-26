@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +28,7 @@ public class Meetup {
     private Registration registration;
 
     @Column(name = "meetup_date")
-    private String meetupDate;
+    private Date meetupDate;
 
     @Column
     private Boolean registered;

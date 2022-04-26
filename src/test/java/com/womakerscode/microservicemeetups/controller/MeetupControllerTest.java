@@ -7,6 +7,7 @@ import com.womakerscode.microservicemeetups.model.entity.Meetup;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.MeetupService;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
+import com.womakerscode.microservicemeetups.util.DateUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +59,13 @@ public class MeetupControllerTest {
         BDDMockito.given(registrationService.getRegistrationByRegistrationAttribute("123")).
                 willReturn(Optional.of(registration));
 
-        Meetup meetup = Meetup.builder().id(11).event("Womakerscode Dados").registration(registration).meetupDate("10/10/2021").build();
+        Meetup meetup = Meetup.builder()
+                .id(11)
+                .event("Womakerscode Dados")
+                .registration(registration)
+                .meetupDate(DateUtil.convertStringToDate("2021-10-10"))
+                //.meetupDate("10/10/2021")
+                .build();
 
         BDDMockito.given(meetupService.save(Mockito.any(Meetup.class))).willReturn(meetup);
 

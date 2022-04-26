@@ -7,6 +7,7 @@ import com.womakerscode.microservicemeetups.model.entity.Meetup;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.MeetupService;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
+import com.womakerscode.microservicemeetups.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,8 @@ public class MeetupController {
         Meetup entity = Meetup.builder()
                 .registration(registration)
                 .event(meetupDTO.getEvent())
-                .meetupDate("10/10/2021")
+                .meetupDate(DateUtil.convertStringToDate("2021-10-10"))
+                //.meetupDate("10/10/2021")
                 .build();
 
         entity = meetupService.save(entity);
