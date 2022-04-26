@@ -23,7 +23,6 @@ public class RegistrationDTO {
     @NotEmpty(message = "The name cannot be empty")
     private String name;
 
-    //@NotEmpty(message = "The date of registration cannot be empty")
     @NotNull(message = "The date of registration cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     @JsonSerialize(as = Date.class)

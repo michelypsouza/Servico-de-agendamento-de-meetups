@@ -4,10 +4,7 @@ import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.repository.RegistrationRepository;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,6 +30,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         return registrationRepository.findById(id);
     }
 
+    //TODO: inserir mais uma validacao no delete();
     @Override
     public void delete(Registration registration) {
         if (registration == null || registration.getId() == null) {
@@ -41,6 +39,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.delete(registration);
     }
 
+    //TODO: inserir mais uma validacao no save();
     @Override
     public Registration update(Registration registration) {
         if (registration == null || registration.getId() == null) {

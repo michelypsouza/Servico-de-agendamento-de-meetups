@@ -24,11 +24,10 @@ public class Meetup {
 
     @JoinColumn(name = "id_registration")
     @ManyToOne
-    // mtos meetups para 1 registro - registro só pode ir em um meetup
     private Registration registration;
 
     @Column(name = "meetup_date")
-    private LocalDate meetupDate;
+    private String meetupDate;
 
     @Column
     private Boolean registered;

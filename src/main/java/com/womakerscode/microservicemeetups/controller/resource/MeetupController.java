@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,8 +37,7 @@ public class MeetupController {
         Meetup entity = Meetup.builder()
                 .registration(registration)
                 .event(meetupDTO.getEvent())
-                .meetupDate(LocalDate.of(2021,10,10))
-                //.meetupDate("10/10/2021")
+                .meetupDate("10/10/2021")
                 .build();
 
         entity = meetupService.save(entity);

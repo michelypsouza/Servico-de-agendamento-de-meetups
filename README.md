@@ -20,7 +20,7 @@ Consiste num pequeno microservice que irá ter lado de client e server no moment
 - [X] Testes de contrato no controller
 - [X] Testes unitarios no repository
 - [X] Implementação do repository
-- [ ] Swagger
+- [X] Swagger
 - [ ] Testes locais via postman
 - [ ] Deploy no azure
 

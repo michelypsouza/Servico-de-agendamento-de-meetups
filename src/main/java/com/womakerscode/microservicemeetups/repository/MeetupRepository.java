@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface MeetupRepository extends JpaRepository<Meetup, Integer> {
 
-    @Query(value = " select m from Meetup as m join m.registration as r where r.registration = :registration or m.event =:event ")
+    @Query(value = " select m from Meetup as m join m.registration as r where r.registration = :registration or m.event = :event ")
     Page<Meetup> findByRegistrationOnMeetup(
             @Param("registration") String registration,
             @Param("event") String event,

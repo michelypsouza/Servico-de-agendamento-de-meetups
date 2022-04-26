@@ -25,10 +25,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/registration")
 public class RegistrationController {
 
-    //@Autowired
     private RegistrationService registrationService;
 
-    //@Autowired
     private ModelMapper modelMapper;
 
     public RegistrationController (RegistrationService registrationService, ModelMapper modelMapper) {

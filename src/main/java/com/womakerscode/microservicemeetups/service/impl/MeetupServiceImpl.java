@@ -32,8 +32,8 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public Meetup update(Meetup load) {
-        return meetupRepository.save(load);
+    public Meetup update(Meetup meetup) {
+        return meetupRepository.save(meetup);
     }
 
     @Override
