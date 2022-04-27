@@ -27,14 +27,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Optional;
 
-import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
+import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -59,9 +58,7 @@ public class RegistrationControllerTest {
         Registration savedRegistration = Registration.builder()
                 .id(101)
                 .name("Michely Souza")
-                //.dateOfRegistration(LocalDate.of(2022,4,1))
-                //.dateOfRegistration(LocalDate.now())
-                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                .dateOfRegistration(getDateWithZeroTime(2021,10,10))
                 .registration("001").build();
 
         // execucao
@@ -81,7 +78,6 @@ public class RegistrationControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(registrationDTOBuilder.getName()))
-                //.andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration()))
                 .andExpect(jsonPath("dateOfRegistration")
                         .value(formatDateToString(registrationDTOBuilder.getDateOfRegistration())))
                 .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
@@ -135,9 +131,7 @@ public class RegistrationControllerTest {
         Registration registration = Registration.builder()
                 .id(id)
                 .name(createNewRegistration().getName())
-                //.dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                //.dateOfRegistration(LocalDate.now())
-                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                .dateOfRegistration(createNewRegistration().getDateOfRegistration())
                 .registration(createNewRegistration().getRegistration())
                 .build();
 
@@ -216,7 +210,7 @@ public class RegistrationControllerTest {
                 Registration.builder()
                         .id(id)
                         .name("Mel Souza")
-                        .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                        .dateOfRegistration(getDateWithZeroTime(2021,10,10))
                         .registration("323")
                         .build();
 
@@ -227,7 +221,7 @@ public class RegistrationControllerTest {
                 Registration.builder()
                         .id(id)
                         .name("Michely Souza")
-                        .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
+                        .dateOfRegistration(getDateWithZeroTime(2021,10,10))
                         .registration("323")
                         .build();
 
@@ -280,11 +274,12 @@ public class RegistrationControllerTest {
                 .registration(createNewRegistration().getRegistration()).build();
 
         BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
-                .willReturn(new PageImpl<Registration>(Arrays.asList(registration), PageRequest.of(0,100), 1));
+                .willReturn(new PageImpl<Registration>(Arrays.asList(registration)
+                        , PageRequest.of(0,100), 1));
 
 
         String queryString = String.format("?name=%s&dateOfRegistration=%s&page=0&size=100",
-                registration.getName(), formatDateToString(registration.getDateOfRegistration()));
+        registration.getName(), formatDateToString(registration.getDateOfRegistration()));
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -305,11 +300,7 @@ public class RegistrationControllerTest {
         return RegistrationDTO.builder()
                 .id(101)
                 .name("Michely Souza")
-                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
-                //.dateOfRegistration(DateUtil.formatDateToString(LocalDate.now()))
-                //.dateOfRegistration(LocalDate.of(2022,4,1))
-                //.dateOfRegistration(LocalDate.now())
-                //.dateOfRegistration(DateTimeFormatter.ofPattern(DATE_PATTERN_DEFAULT).format(LocalDate.now()))
+                .dateOfRegistration(getDateWithZeroTime(2021,10,10))
                 .registration("001").build();
     }
 

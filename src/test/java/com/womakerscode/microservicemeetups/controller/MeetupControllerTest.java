@@ -7,7 +7,6 @@ import com.womakerscode.microservicemeetups.model.entity.Meetup;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.MeetupService;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
-import com.womakerscode.microservicemeetups.util.DateUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Optional;
@@ -63,7 +63,8 @@ public class MeetupControllerTest {
                 .id(11)
                 .event("Womakerscode Dados")
                 .registration(registration)
-                .meetupDate(DateUtil.convertStringToDate("2021-10-10"))
+                .meetupDate(getDateWithZeroTime(2021,10,10))
+                //.meetupDate(DateUtil.convertStringToDate("2021-10-10"))
                 //.meetupDate("10/10/2021")
                 .build();
 

@@ -1,7 +1,6 @@
 package com.womakerscode.microservicemeetups.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.womakerscode.microservicemeetups.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +24,6 @@ public class RegistrationDTO {
 
     @NotNull(message = "The date of registration cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
-    @JsonSerialize(as = Date.class)
     private Date dateOfRegistration;
 
     @NotEmpty

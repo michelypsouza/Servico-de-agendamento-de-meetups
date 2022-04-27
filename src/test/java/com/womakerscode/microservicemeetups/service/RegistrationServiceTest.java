@@ -18,9 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
-import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
+import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -35,7 +36,6 @@ public class RegistrationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // dependencia de service e dar um new na mesma
         this.registrationService = new RegistrationServiceImpl(registrationRepository) ;
     }
 
@@ -55,9 +55,7 @@ public class RegistrationServiceTest {
         // assert
         assertThat(savedRegistration.getId()).isEqualTo(101);
         assertThat(savedRegistration.getName()).isEqualTo("Michely Souza");
-        //assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
-        assertThat(formatDateToString(savedRegistration.getDateOfRegistration()))
-                .isEqualTo(formatDateToString(Calendar.getInstance(Locale.getDefault()).getTime()));
+        assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(getDateWithZeroTime(2021,10,11));
         assertThat(savedRegistration.getRegistration()).isEqualTo("001");
 
     }
@@ -155,8 +153,8 @@ public class RegistrationServiceTest {
         Registration registration = createValidRegistration();
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        List<Registration> listRegistrations = Arrays.asList(registration);
-        Page<Registration> page = new PageImpl<>(Arrays.asList(registration),
+        List<Registration> listRegistrations = List.of(registration);
+        Page<Registration> page = new PageImpl<>(List.of(registration),
                 PageRequest.of(0,10), 1);
 
         // execucao
@@ -198,8 +196,7 @@ public class RegistrationServiceTest {
         return Registration.builder()
                 .id(101)
                 .name("Michely Souza")
-                .dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
-//                .dateOfRegistration(LocalDate.now())
+                .dateOfRegistration(getDateWithZeroTime(2021,10,11))
                 .registration("001")
                 .build();
     }
