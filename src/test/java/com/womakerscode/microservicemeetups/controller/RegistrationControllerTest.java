@@ -284,7 +284,7 @@ public class RegistrationControllerTest {
 
 
         String queryString = String.format("?name=%s&dateOfRegistration=%s&page=0&size=100",
-                registration.getRegistration(), formatDateToString(registration.getDateOfRegistration()));
+                registration.getName(), formatDateToString(registration.getDateOfRegistration()));
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
