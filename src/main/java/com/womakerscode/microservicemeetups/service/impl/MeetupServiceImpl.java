@@ -14,7 +14,6 @@ import java.util.Optional;
 @Service
 public class MeetupServiceImpl implements MeetupService {
 
-
     private MeetupRepository meetupRepository;
 
     public MeetupServiceImpl(MeetupRepository meetupRepository) {

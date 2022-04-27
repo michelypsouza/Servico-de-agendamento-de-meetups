@@ -1,12 +1,14 @@
 package com.womakerscode.microservicemeetups.controller;
 
 import com.womakerscode.microservicemeetups.controller.dto.MeetupDTO;
+import com.womakerscode.microservicemeetups.controller.dto.MeetupFilterDTO;
 import com.womakerscode.microservicemeetups.controller.resource.MeetupController;
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Meetup;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.MeetupService;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,9 +29,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
+import static com.womakerscode.microservicemeetups.util.DateUtil.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
@@ -64,8 +70,6 @@ public class MeetupControllerTest {
                 .event("Womakerscode Dados")
                 .registration(registration)
                 .meetupDate(getDateWithZeroTime(2021,10,10))
-                //.meetupDate(DateUtil.convertStringToDate("2021-10-10"))
-                //.meetupDate("10/10/2021")
                 .build();
 
         BDDMockito.given(meetupService.save(Mockito.any(Meetup.class))).willReturn(meetup);
@@ -82,7 +86,6 @@ public class MeetupControllerTest {
 
     }
 
-
     @Test
     @DisplayName("Should return error when try to register an a meetup nonexistent")
     public void invalidRegistrationCreateMeetupTest() throws Exception {
@@ -93,7 +96,6 @@ public class MeetupControllerTest {
         BDDMockito.given(registrationService.getRegistrationByRegistrationAttribute("123")).
                 willReturn(Optional.empty());
 
-
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(MEETUP_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,8 +105,6 @@ public class MeetupControllerTest {
                 .andExpect(status().isBadRequest());
 
     }
-
-
 
     @Test
     @DisplayName("Should return error when try to register a registration already register on a meetup")
@@ -129,6 +129,42 @@ public class MeetupControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should filter meetup")
+    public void findMeetupTest() throws Exception {
+
+        Integer id = 11;
+        Integer idMeetup = 13;
+
+        Meetup meetup = Meetup.builder()
+                .id(idMeetup)
+                .registration(Registration.builder().registration("123").build())
+                .event("Womakerscode Dados")
+                .meetupDate(getCurrentDate())
+                .build();
+
+        BDDMockito.given(meetupService.find(Mockito.any(MeetupFilterDTO.class), Mockito.any(Pageable.class)) )
+                .willReturn(new PageImpl<Meetup>(Arrays.asList(meetup)
+                        , PageRequest.of(0,100), 1));
+
+        String queryString = String.format("?registration=%s&event=%s&page=0&size=100",
+                meetup.getRegistration().getRegistration(), meetup.getEvent());
+
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(MEETUP_API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements"). value(1))
+                .andExpect(jsonPath("pageable.pageSize"). value(100))
+                .andExpect(jsonPath("pageable.pageNumber"). value(0));
+
     }
 
 }

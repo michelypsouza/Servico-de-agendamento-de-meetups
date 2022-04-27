@@ -38,7 +38,7 @@ public class Registration {
     @Column
     private String registration;
 
-    @OneToMany(mappedBy = "registration")
+    @OneToMany
     private List<Meetup> meetups;
 
 }

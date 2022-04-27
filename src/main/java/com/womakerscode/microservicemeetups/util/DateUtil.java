@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public class DateUtil {
 
-    public static final String DATE_PATTERN_DEFAULT = "yyyy-MM-dd";
+    public static final String DATE_PATTERN_DEFAULT = "dd/MM/yyyy";
 
     public static String formatDateToString(Date date) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN_DEFAULT);
