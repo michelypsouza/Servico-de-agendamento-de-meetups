@@ -59,7 +59,8 @@ public class RegistrationControllerTest {
                 .id(101)
                 .name("Michely Souza")
                 .dateOfRegistration(getDateWithZeroTime(2021,10,10))
-                .registration("001").build();
+                .registrationNumber("001")
+                .build();
 
         // execucao
         BDDMockito.given(registrationService.save(any(Registration.class))).willReturn(savedRegistration);
@@ -80,7 +81,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("name").value(registrationDTOBuilder.getName()))
                 .andExpect(jsonPath("dateOfRegistration")
                         .value(formatDateToString(registrationDTOBuilder.getDateOfRegistration())))
-                .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
+                .andExpect(jsonPath("registrationNumber").value(registrationDTOBuilder.getRegistrationNumber()));
 
     }
 
@@ -132,7 +133,7 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .registration(createNewRegistration().getRegistration())
+                .registrationNumber(createNewRegistration().getRegistrationNumber())
                 .build();
 
         BDDMockito.given(registrationService.getRegistrationById(id)).willReturn(Optional.of(registration));
@@ -148,7 +149,8 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
                 .andExpect(jsonPath("dateOfRegistration")
                         .value(formatDateToString(createNewRegistration().getDateOfRegistration())))
-                .andExpect(jsonPath("registration").value(createNewRegistration().getRegistration()));
+                .andExpect(jsonPath("registrationNumber")
+                        .value(createNewRegistration().getRegistrationNumber()));
 
     }
 
@@ -211,7 +213,7 @@ public class RegistrationControllerTest {
                         .id(id)
                         .name("Mel Souza")
                         .dateOfRegistration(getDateWithZeroTime(2021,10,10))
-                        .registration("323")
+                        .registrationNumber("323")
                         .build();
 
         BDDMockito.given(registrationService.getRegistrationById(anyInt()))
@@ -222,7 +224,7 @@ public class RegistrationControllerTest {
                         .id(id)
                         .name("Michely Souza")
                         .dateOfRegistration(getDateWithZeroTime(2021,10,10))
-                        .registration("323")
+                        .registrationNumber("323")
                         .build();
 
         BDDMockito.given(registrationService.update(updatingRegistration))
@@ -240,7 +242,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
                 .andExpect(jsonPath("dateOfRegistration")
                         .value(formatDateToString(createNewRegistration().getDateOfRegistration())))
-                .andExpect(jsonPath("registration").value("323"));
+                .andExpect(jsonPath("registrationNumber").value("323"));
     }
 
     @Test
@@ -271,7 +273,8 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .registration(createNewRegistration().getRegistration()).build();
+                .registrationNumber(createNewRegistration().getRegistrationNumber())
+                .build();
 
         BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
                 .willReturn(new PageImpl<Registration>(Arrays.asList(registration)
@@ -301,7 +304,8 @@ public class RegistrationControllerTest {
                 .id(101)
                 .name("Michely Souza")
                 .dateOfRegistration(getDateWithZeroTime(2021,10,10))
-                .registration("001").build();
+                .registrationNumber("001")
+                .build();
     }
 
 }

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MeetupFilterDTO {
+public class EventFilterDTO {
 
-    private String registration;
+    private Long participantId;
 
-    private String event;
+    private String title;
 
 }

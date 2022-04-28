@@ -18,5 +18,5 @@ public interface RegistrationService {
 
     Page<Registration> find(Registration filter, Pageable pageable);
 
-    Optional<Registration> getRegistrationByRegistrationAttribute(String registrationAttribute);
+    Optional<Registration> getRegistrationByRegistrationNumber(String registrationNumber);
 }

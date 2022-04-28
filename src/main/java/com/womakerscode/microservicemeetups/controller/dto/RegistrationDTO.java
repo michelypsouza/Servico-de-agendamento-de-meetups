@@ -27,6 +27,6 @@ public class RegistrationDTO {
     private Date dateOfRegistration;
 
     @NotEmpty
-    private String registration;
+    private String registrationNumber;
 
 }

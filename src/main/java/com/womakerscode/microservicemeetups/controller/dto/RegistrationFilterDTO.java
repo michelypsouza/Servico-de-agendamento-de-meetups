@@ -14,6 +14,6 @@ public class RegistrationFilterDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     private Date dateOfRegistration;
 
-    private String registration;
+    private String registrationNumber;
 
 }

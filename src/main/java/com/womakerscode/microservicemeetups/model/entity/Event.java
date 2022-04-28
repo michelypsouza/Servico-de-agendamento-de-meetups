@@ -34,11 +34,11 @@ public class Event {
     @Column(name = "end_event")
     private Date eventEnd;
 
-    @OneToMany
-    private List<Registration> registrations;
-
     @JoinColumn(name = "event_producer_id")
     private Long eventProducerId;
+
+    @OneToMany
+    private List<Registration> registrations;
 
 //    @Column
 //    private Boolean registered;

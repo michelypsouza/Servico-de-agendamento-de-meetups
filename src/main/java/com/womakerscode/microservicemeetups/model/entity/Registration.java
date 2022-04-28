@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,13 +18,13 @@ public class Registration {
 
     @Id
     @Column(name = "registration_id")
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 //    @Column
 //    private String description;
 
-    //badge
+    // badge / name tag
     @Column(name = "name_tag")
     private String nameTag;
 

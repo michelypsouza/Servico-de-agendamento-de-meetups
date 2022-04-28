@@ -13,17 +13,22 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MeetupDTO {
+public class EventRequest {
 
     private Integer id;
 
-    private String registrationAttribute;
+    private String title;
 
-    private String event;
+    private String description;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
-    private Date meetupDate;
+    private Date eventStart;
 
-    private RegistrationDTO registration;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
+    private Date eventEnd;
+
+    private Long eventProducerId;
+
+//    private List<RegistrationDTO> registrations;
 
 }

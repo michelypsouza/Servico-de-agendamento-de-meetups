@@ -30,12 +30,12 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should return true when exists an registration already created.")
     public void returnTrueWhenRegistrationExists() {
 
-        String registration = "123";
+        String registrationNumber = "123";
 
-        Registration registrationClassAttribute = createNewRegistration(registration);
+        Registration registrationClassAttribute = createNewRegistration(registrationNumber);
         entityManager.persist(registrationClassAttribute);
 
-        boolean exists = registrationRepository.existsByRegistration(registration);
+        boolean exists = registrationRepository.existsByRegistration(registrationNumber);
 
         assertThat(exists).isTrue();
     }
@@ -97,13 +97,12 @@ public class RegistrationRepositoryTest {
 
     }
 
-    public static Registration createNewRegistration(String registration) {
+    public static Registration createNewRegistration(String registrationNumber) {
         return Registration.builder()
                 .name("Michely Souza")
                 .dateOfRegistration(getCurrentDate())
-                //.dateOfRegistration(Calendar.getInstance(Locale.getDefault()).getTime())
-//                .dateOfRegistration(LocalDate.now())
-                .registration(registration).build();
+                .registrationNumber(registrationNumber)
+                .build();
     }
 
 }
