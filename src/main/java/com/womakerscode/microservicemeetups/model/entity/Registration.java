@@ -5,14 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -27,18 +21,23 @@ public class Registration {
     @Id
     @Column(name = "registration_id")
     @GeneratedValue(strategy = IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "person_name")
-    private String name;
+//    @Column
+//    private String description;
+
+    //badge
+    @Column(name = "name_tag")
+    private String nameTag;
 
     @Column(name = "date_of_registration")
     private Date dateOfRegistration;
 
-    @Column
-    private String registration;
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 
-    @OneToMany
-    private List<Meetup> meetups;
+    @JoinColumn(name = "participant_id")
+    private Long participantId;
 
 }
