@@ -22,14 +22,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     //Optional<Event> findByEvent(String codeEvent);
 
-//    @Query(value = " select m from Meetup as m join m.registration as r " +
-//            "where r.registrationNumber = :registrationNumber or m.event = :event ")
-//    Page<Event> findByRegistrationOnMeetup(
-//            @Param("registrationNumber") String registrationNumber,
-//            @Param("event") String event,
-//            Pageable pageable
-//    );
-//
-//    Page<Event> findByRegistration(Registration registration, Pageable pageable );
-
 }

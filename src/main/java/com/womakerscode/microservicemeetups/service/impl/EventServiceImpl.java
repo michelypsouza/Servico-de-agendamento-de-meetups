@@ -34,8 +34,21 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id);
     }
 
+    //TODO: inserir mais uma validacao no delete();
+    @Override
+    public void delete(Event event) {
+        if (event == null || event.getId() == null) {
+            throw new IllegalArgumentException("Event id cannot be null");
+        }
+        eventRepository.delete(event);
+    }
+
+    //TODO: inserir mais uma validacao no save();
     @Override
     public Event update(Event event) {
+        if (event == null || event.getId() == null) {
+            throw new IllegalArgumentException("Event id cannot be null");
+        }
         return eventRepository.save(event);
     }
 
@@ -51,15 +64,20 @@ public class EventServiceImpl implements EventService {
 //        return eventRepository.findByRegistrationOnEvent( filterDTO.getRegistration(), filterDTO.getEvent(), pageable );
     }
 
+    @Override
+    public Optional<Event> findByEventExistent (Event event) {
+        return eventRepository.findByEventExistent(event.getTitle(), event.getEventStart(), event.getEventEnd(),
+                event.getOrganizerId());
+    }
+
+    private boolean existsByEvent (Event event) {
+        return findByEventExistent(event).isPresent();
+    }
+
 //    @Override
 //    public Optional<Event> getEventByCodeEvent(String codeEvent) {
 //        return eventRepository.findByEvent(codeEvent);
 //    }
-
-    private boolean existsByEvent (Event event) {
-        return eventRepository.findByEventExistent(event.getTitle(), event.getEventStart(), event.getEventEnd(),
-                event.getOrganizerId()).isPresent();
-    }
 
 //    @Override
 //    public Page<Event> getRegistrationsByEvent(Registration registration, Pageable pageable) {

@@ -12,9 +12,13 @@ public interface EventService {
 
     Optional<Event> getById(Long id);
 
+    void delete(Event event);
+
     Event update(Event event);
 
     Page<Event> find(Event filter, Pageable pageable);
+
+    Optional<Event> findByEventExistent(Event event);
 
 //    Optional<Event> getEventByCodeEvent(String codeEvent);
 
