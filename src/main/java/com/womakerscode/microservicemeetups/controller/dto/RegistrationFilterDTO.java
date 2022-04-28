@@ -7,13 +7,17 @@ import java.util.Date;
 
 public class RegistrationFilterDTO {
 
-    private Integer id;
+    private Long id;
 
-    private String name;
+    private String nameTag;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     private Date dateOfRegistration;
 
-    private String registrationNumber;
+    private Long eventId;
+
+    private String eventTitle;
+
+    private Long participantId;
 
 }

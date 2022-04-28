@@ -19,14 +19,16 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     public Registration save(Registration registration) {
-        if (registrationRepository.existsByRegistration(registration.getRegistrationNumber())) {
+        //if (registrationRepository.findById(registration.getId()).isPresent()) {
+        if (registrationRepository.findExistingRegistrationEvent(
+                registration.getEvent().getId(), registration.getParticipantId()).isPresent()) {
             throw new BusinessException("Registration already created");
         }
         return registrationRepository.save(registration);
     }
 
     @Override
-    public Optional<Registration> getRegistrationById(Integer id) {
+    public Optional<Registration> getRegistrationById(Long id) {
         return registrationRepository.findById(id);
     }
 
@@ -60,8 +62,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         return registrationRepository.findAll(example, pageable);
     }
 
-    @Override
-    public Optional<Registration> getRegistrationByRegistrationNumber(String registrationNumber) {
-        return registrationRepository.findByRegistration(registrationNumber);
-    }
+//    @Override
+//    public Optional<Registration> getRegistrationByRegistrationNumber(String registrationNumber) {
+//        return registrationRepository.findByRegistration(registrationNumber);
+//    }
 }

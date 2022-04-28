@@ -29,9 +29,10 @@ public class EventController {
 
         Event entity = Event.builder()
                 .title(eventPostRequestBody.getTitle())
+                .description(eventPostRequestBody.getDescription())
                 .eventStart(eventPostRequestBody.getEventStart())
                 .eventEnd(eventPostRequestBody.getEventEnd())
-                .eventProducerId(eventPostRequestBody.getEventProducerId())
+                .organizerId(eventPostRequestBody.getOrganizerId())
                 .build();
 
         entity = eventService.save(entity);

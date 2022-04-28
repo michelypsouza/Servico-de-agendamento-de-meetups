@@ -1,5 +1,6 @@
 package com.womakerscode.microservicemeetups.repository;
 
+import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,27 +28,26 @@ public class RegistrationRepositoryTest {
     RegistrationRepository registrationRepository;
 
     @Test
-    @DisplayName("Should return true when exists an registration already created.")
-    public void returnTrueWhenRegistrationExists() {
+    @DisplayName("Must return true when an participant is registered for in the event.")
+    public void returnTrueWhenParticipantIsRegisteredInEvent() {
 
-        String registrationNumber = "123";
+        Long eventId = 1L;
 
-        Registration registrationClassAttribute = createNewRegistration(registrationNumber);
-        entityManager.persist(registrationClassAttribute);
+        Registration registration = createNewRegistration(eventId);
+        entityManager.persist(registration);
 
-        boolean exists = registrationRepository.existsByRegistration(registrationNumber);
+        boolean exists = registrationRepository.findExistingRegistrationEvent(eventId, registration.getParticipantId())
+                .isPresent();
 
         assertThat(exists).isTrue();
     }
 
     @Test
-    @DisplayName("Should return false when doesn't exists an registration_attribute with a " +
-            "registration already created.")
-    public void returnFalseWhenRegistrationAttributeDoesntExists() {
+    @DisplayName("Must return false when an participant is not registered for in the event.")
+    public void returnFalseWhenParticipantIsNotRegisteredInEvent() {
 
-        String registration = "123";
-
-        boolean exists = registrationRepository.existsByRegistration(registration);
+        boolean exists = registrationRepository.findExistingRegistrationEvent(0L, 0L)
+                .isPresent();
 
         assertThat(exists).isFalse();
 
@@ -57,11 +57,10 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should get an registration by id from the base")
     public void findByIdTest() {
 
-        Registration registrationClassAttribute = createNewRegistration("323");
-        entityManager.persist(registrationClassAttribute);
+        Registration newRegistration = createNewRegistration(1L);
+        entityManager.persist(newRegistration);
 
-        Optional<Registration> foundRegistration = registrationRepository
-                .findById(registrationClassAttribute.getId());
+        Optional<Registration> foundRegistration = registrationRepository.findById(newRegistration.getId());
 
         assertThat(foundRegistration.isPresent()).isTrue();
 
@@ -71,9 +70,9 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should save an registration from the base")
     public void saveRegistrationTest() {
 
-        Registration registrationClassAttribute = createNewRegistration("323");
+        Registration newRegistration = createNewRegistration(1L);
 
-        Registration savedRegistration = registrationRepository.save(registrationClassAttribute);
+        Registration savedRegistration = registrationRepository.save(newRegistration);
 
         assertThat(savedRegistration.getId()).isNotNull();
 
@@ -83,25 +82,27 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should delete and registration from the base")
     public void deleteRegistration() {
 
-        Registration registrationClassAttribute = createNewRegistration("323");
-        entityManager.persist(registrationClassAttribute);
+        Registration newRegistration = createNewRegistration(1L);
+        entityManager.persist(newRegistration);
 
-        Registration foundRegistration = entityManager
-                .find(Registration.class, registrationClassAttribute.getId());
+        Registration foundRegistration = entityManager.find(Registration.class, newRegistration.getId());
         registrationRepository.delete(foundRegistration);
 
-        Registration deleteRegistration = entityManager
-                .find(Registration.class, registrationClassAttribute.getId());
+        Registration deleteRegistration = entityManager.find(Registration.class, newRegistration.getId());
 
         assertThat(deleteRegistration).isNull();
 
     }
 
-    public static Registration createNewRegistration(String registrationNumber) {
+    public static Registration createNewRegistration(Long eventId) {
         return Registration.builder()
-                .name("Michely Souza")
+                .id(11L)
+                .nameTag("Michely")
                 .dateOfRegistration(getCurrentDate())
-                .registrationNumber(registrationNumber)
+                .event(Event.builder()
+                        .id(eventId)
+                        .build())
+                .participantId(23L)
                 .build();
     }
 

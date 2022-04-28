@@ -25,6 +25,9 @@ public class EventPostRequestBody {
     @NotEmpty(message = "The title of the event cannot be empty")
     private String title;
 
+    @NotEmpty(message = "The description of the event cannot be empty")
+    private String description;
+
     @NotNull(message = "The date of start of the event cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     private Date eventStart;
@@ -33,8 +36,8 @@ public class EventPostRequestBody {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     private Date eventEnd;
 
-    @NotNull(message = "The event producer cannot be empty")
-    private Long eventProducerId;
+    @NotNull(message = "The organizer cannot be empty")
+    private Long organizerId;
 
     //private List<RegistrationDTO> registrations;
 

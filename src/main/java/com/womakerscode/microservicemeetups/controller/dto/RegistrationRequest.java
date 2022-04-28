@@ -15,18 +15,21 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDTO {
+public class RegistrationRequest {
 
-    private Integer id;
+    private Long id;
 
-    @NotEmpty(message = "The name cannot be empty")
-    private String name;
+    @NotEmpty(message = "The name tag cannot be empty")
+    private String nameTag;
 
     @NotNull(message = "The date of registration cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     private Date dateOfRegistration;
 
-    @NotEmpty
-    private String registrationNumber;
+    @NotNull(message = "The event cannot be empty")
+    private EventRequest eventRequest;
+
+    @NotNull(message = "The event cannot be empty")
+    private Long participantId;
 
 }

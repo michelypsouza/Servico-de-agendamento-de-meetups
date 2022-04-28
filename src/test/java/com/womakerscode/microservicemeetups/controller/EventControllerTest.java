@@ -52,17 +52,19 @@ public class EventControllerTest {
 
         EventPostRequestBody dto = EventPostRequestBody.builder()
                 .title("Womakerscode Dados")
+                .description("Palestra organizada pela Womakerscode sobre Dados")
                 .eventStart(getDateWithZeroTime(2021,10,10))
                 .eventEnd(getDateWithZeroTime(2021,10,10))
-                .eventProducerId(1L)
+                .organizerId(1L)
                 .build();
         String json = new ObjectMapper().writeValueAsString(dto);
 
         Event event = Event.builder()
                 .title("Womakerscode Dados")
+                .description("Palestra organizada pela Womakerscode sobre Dados")
                 .eventStart(getDateWithZeroTime(2021,10,10))
                 .eventEnd(getDateWithZeroTime(2021,10,10))
-                .eventProducerId(1L)
+                .organizerId(1L)
                 .build();
 
         BDDMockito.given(eventService.save(Mockito.any(Event.class))).willReturn(event);
@@ -75,9 +77,10 @@ public class EventControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("title").value(dto.getTitle()))
+                .andExpect(jsonPath("description").value(dto.getDescription()))
                 .andExpect(jsonPath("eventStart").value(formatDateToString(dto.getEventStart())))
                 .andExpect(jsonPath("eventEnd").value(formatDateToString(dto.getEventEnd())))
-                .andExpect(jsonPath("eventProducerId").value(dto.getEventProducerId()));
+                .andExpect(jsonPath("eventProducerId").value(dto.getOrganizerId()));
 
     }
 
@@ -134,16 +137,16 @@ public class EventControllerTest {
                 .description("Womakerscode Dados é um evento realizado pela Womakerscode sobre Banco de Dados")
                 .eventStart(getDateWithZeroTime(2021,10,10))
                 .eventEnd(getDateWithZeroTime(2021,10,10))
-                .eventProducerId(1L)
+                .organizerId(1L)
                 .build();
 
         BDDMockito.given(eventService.find(Mockito.any(Event.class), Mockito.any(Pageable.class)) )
                 .willReturn(new PageImpl<Event>(Arrays.asList(event)
                         , PageRequest.of(0,100), 1));
 
-        String queryString = String.format("?title=%s&eventStart=%s&eventEnd=%s&eventProducerId=%d&page=0&size=100",
+        String queryString = String.format("?title=%s&eventStart=%s&eventEnd=%s&organizerId=%d&page=0&size=100",
                 event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
-                event.getEventProducerId());
+                event.getOrganizerId());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -154,9 +157,9 @@ public class EventControllerTest {
                 .perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content", Matchers.hasSize(1)))
-                .andExpect(jsonPath("totalElements"). value(1))
-                .andExpect(jsonPath("pageable.pageSize"). value(100))
-                .andExpect(jsonPath("pageable.pageNumber"). value(0));
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
 
     }
 

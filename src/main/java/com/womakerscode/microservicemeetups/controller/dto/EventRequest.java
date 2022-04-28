@@ -17,6 +17,8 @@ public class EventRequest {
 
     private Integer id;
 
+    private String codeEvent;
+
     private String title;
 
     private String description;
@@ -27,7 +29,7 @@ public class EventRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
     private Date eventEnd;
 
-    private Long eventProducerId;
+    private Long organizerId;
 
 //    private List<RegistrationDTO> registrations;
 

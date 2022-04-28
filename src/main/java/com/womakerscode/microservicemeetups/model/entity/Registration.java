@@ -21,9 +21,6 @@ public class Registration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column
-//    private String description;
-
     // badge / name tag
     @Column(name = "name_tag")
     private String nameTag;
@@ -35,7 +32,8 @@ public class Registration {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @JoinColumn(name = "participant_id")
+    // participant user
+    @Column(name = "participant_id")
     private Long participantId;
 
 }

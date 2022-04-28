@@ -16,6 +16,8 @@ public interface EventService {
 
     Page<Event> find(Event filter, Pageable pageable);
 
+//    Optional<Event> getEventByCodeEvent(String codeEvent);
+
 //    Page<Event> getRegistrationsByEvent(Registration registration, Pageable pageable);
 
 }

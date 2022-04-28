@@ -10,7 +10,7 @@ public interface RegistrationService {
 
     Registration save(Registration registration);
 
-    Optional<Registration> getRegistrationById(Integer id);
+    Optional<Registration> getRegistrationById(Long id);
 
     void delete(Registration registration);
 
@@ -18,5 +18,5 @@ public interface RegistrationService {
 
     Page<Registration> find(Registration filter, Pageable pageable);
 
-    Optional<Registration> getRegistrationByRegistrationNumber(String registrationNumber);
+//    Optional<Registration> getRegistrationByRegistrationNumber(String registrationNumber);
 }

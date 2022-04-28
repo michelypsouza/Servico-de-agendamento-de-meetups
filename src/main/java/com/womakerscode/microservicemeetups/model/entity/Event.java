@@ -22,6 +22,9 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code_event")
+    private String codeEvent;
+
     @Column
     private String title;
 
@@ -34,13 +37,10 @@ public class Event {
     @Column(name = "end_event")
     private Date eventEnd;
 
-    @JoinColumn(name = "event_producer_id")
-    private Long eventProducerId;
+    @Column(name = "organizer_id")
+    private Long organizerId;
 
     @OneToMany
     private List<Registration> registrations;
-
-//    @Column
-//    private Boolean registered;
 
 }
