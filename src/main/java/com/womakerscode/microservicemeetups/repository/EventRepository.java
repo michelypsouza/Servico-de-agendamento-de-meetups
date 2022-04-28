@@ -15,7 +15,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = " select e from Event as e where e.title = :title and e.eventStart = :eventStart " +
             "and e.eventEnd = :eventEnd and e.organizerId = :organizerId ")
-    Event findByEventExistent(@Param("title") String title,
+    Optional<Event> findByEventExistent(@Param("title") String title,
                                     @Param("eventStart") Date eventStart,
                                     @Param("eventEnd") Date eventEnd,
                                     @Param("organizerId") Long organizerId);

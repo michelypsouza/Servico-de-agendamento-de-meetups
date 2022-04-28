@@ -58,7 +58,7 @@ public class EventServiceImpl implements EventService {
 
     private boolean existsByEvent (Event event) {
         return eventRepository.findByEventExistent(event.getTitle(), event.getEventStart(), event.getEventEnd(),
-                event.getOrganizerId()) != null;
+                event.getOrganizerId()).isPresent();
     }
 
 //    @Override

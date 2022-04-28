@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
+import static com.womakerscode.microservicemeetups.util.DateUtil.getCurrentDate;
 import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,31 +27,29 @@ public class EventRepositoryTest {
     @Autowired
     EventRepository eventRepository;
 
-//    @Test
-//    @DisplayName("Must return true when an participant is registered for in the event.")
-//    public void returnTrueWhenParticipantIsRegisteredInEvent() {
-//
-//        Long eventId = 1L;
-//
-//        Event event = createNewEvent(eventId);
-//        entityManager.persist(event);
-//
-//        boolean exists = registrationRepository.findExistingRegistrationEvent(eventId, event.getParticipantId())
-//                .isPresent();
-//
-//        assertThat(exists).isTrue();
-//    }
-//
-//    @Test
-//    @DisplayName("Must return false when an participant is not registered for in the event.")
-//    public void returnFalseWhenParticipantIsNotRegisteredInEvent() {
-//
-//        boolean exists = registrationRepository.findExistingRegistrationEvent(0L, 0L)
-//                .isPresent();
-//
-//        assertThat(exists).isFalse();
-//
-//    }
+    @Test
+    @DisplayName("Should return true when when an event exists")
+    public void returnTrueWhenEventExists() {
+
+        Event event = createNewEvent();
+        entityManager.persist(event);
+
+        boolean exists = eventRepository.findByEventExistent(event.getTitle(), event.getEventStart(),
+                event.getEventEnd(), event.getOrganizerId()).isPresent();
+
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should return false when an event not exists")
+    public void returnFalseWhenEventNotExists() {
+
+        boolean exists = eventRepository.findByEventExistent("", getCurrentDate(), getCurrentDate(), 0L)
+                .isPresent();
+
+        assertThat(exists).isFalse();
+
+    }
 
     @Test
     @DisplayName("Should get an event by id from the base")
