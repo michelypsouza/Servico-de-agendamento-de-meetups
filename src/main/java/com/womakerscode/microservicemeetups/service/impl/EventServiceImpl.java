@@ -66,22 +66,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Optional<Event> findByEventExistent (Event event) {
-        return eventRepository.findByEventExistent(event.getTitle(), event.getEventStart(), event.getEventEnd(),
+        return eventRepository.findByEventExistent(event.getTitle(), event.getStartDate(), event.getEndDate(),
                 event.getOrganizerId());
     }
 
     private boolean existsByEvent (Event event) {
         return findByEventExistent(event).isPresent();
     }
-
-//    @Override
-//    public Optional<Event> getEventByCodeEvent(String codeEvent) {
-//        return eventRepository.findByEvent(codeEvent);
-//    }
-
-//    @Override
-//    public Page<Event> getRegistrationsByEvent(Registration registration, Pageable pageable) {
-//        return eventRepository.findByRegistration(registration, pageable);
-//    }
 
 }

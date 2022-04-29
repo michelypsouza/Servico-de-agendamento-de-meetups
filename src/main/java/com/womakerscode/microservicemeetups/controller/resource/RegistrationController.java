@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.womakerscode.microservicemeetups.util.DateUtil.getCurrentDate;
 
 @RestController
 @RequestMapping("/api/registration")
@@ -45,7 +44,7 @@ public class RegistrationController {
                 .nameTag(registrationPostRequestBody.getNameTag())
                 .event(event)
                 .participantId(registrationPostRequestBody.getParticipantId())
-                .dateOfRegistration(getCurrentDate())
+                .dateOfRegistration(LocalDateTime.now())
                 .build();
 
         entity = registrationService.save(entity);

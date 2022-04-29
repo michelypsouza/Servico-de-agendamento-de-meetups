@@ -1,6 +1,7 @@
 package com.womakerscode.microservicemeetups.repository;
 
 import com.womakerscode.microservicemeetups.model.entity.Event;
+import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,10 +11,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.womakerscode.microservicemeetups.util.DateUtil.getCurrentDate;
-import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -32,16 +32,16 @@ public class EventRepositoryTest {
     public void returnTrueWhenEventExists() {
         Event event = createNewEvent();
         entityManager.persist(event);
-        boolean exists = eventRepository.findByEventExistent(event.getTitle(), event.getEventStart(),
-                event.getEventEnd(), event.getOrganizerId()).isPresent();
+        boolean exists = eventRepository.findByEventExistent(event.getTitle(), event.getStartDate()
+                , event.getEndDate(), event.getOrganizerId()).isPresent();
         assertThat(exists).isTrue();
     }
 
     @Test
     @DisplayName("Should return false when an event not exists")
     public void returnFalseWhenEventNotExists() {
-        boolean exists = eventRepository.findByEventExistent("", getCurrentDate(), getCurrentDate(), 0L)
-                .isPresent();
+        boolean exists = eventRepository.findByEventExistent("",LocalDateTime.now()
+                , LocalDateTime.now(), 0L).isPresent();
         assertThat(exists).isFalse();
     }
 
@@ -77,8 +77,9 @@ public class EventRepositoryTest {
         return Event.builder()
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                .eventStart(getDateWithZeroTime(2022,3,24))
-                .eventEnd(getDateWithZeroTime(2022,3,24))
+                .startDate(LocalDateTime.of(2022,3,24,19,0))
+                .endDate(LocalDateTime.of(2022,3,24,21,0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 .organizerId(3L)
                 .build();
     }

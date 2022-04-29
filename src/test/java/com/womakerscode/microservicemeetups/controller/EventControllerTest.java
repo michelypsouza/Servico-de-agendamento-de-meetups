@@ -3,6 +3,7 @@ package com.womakerscode.microservicemeetups.controller;
 import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
 import com.womakerscode.microservicemeetups.controller.resource.EventController;
 import com.womakerscode.microservicemeetups.model.entity.Event;
+import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.service.EventService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -25,11 +26,12 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
-import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
+import static com.womakerscode.microservicemeetups.util.DateUtil.convertStringToLocalDateTimeWithTime;
+import static com.womakerscode.microservicemeetups.util.DateUtil.formatLocalDateTimeToStringWithTime;
 import static org.mockito.Mockito.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,8 +57,9 @@ public class EventControllerTest {
         EventPostRequestBody dto = EventPostRequestBody.builder()
                 .title("Womakerscode Dados")
                 .description("Palestra organizada pela Womakerscode sobre Dados")
-                .eventStart(getDateWithZeroTime(2022,3,24))
-                .eventEnd(getDateWithZeroTime(2022,3,24))
+                .startDate(convertStringToLocalDateTimeWithTime("24/03/2022 19:00"))
+                .endDate(convertStringToLocalDateTimeWithTime("24/03/2022 21:00"))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 .organizerId(1L)
                 .build();
         String json = new ObjectMapper().writeValueAsString(dto);
@@ -64,8 +67,9 @@ public class EventControllerTest {
         Event event = Event.builder()
                 .title("Womakerscode Dados")
                 .description("Palestra organizada pela Womakerscode sobre Dados")
-                .eventStart(getDateWithZeroTime(2022,3,24))
-                .eventEnd(getDateWithZeroTime(2022,3,24))
+                .startDate(convertStringToLocalDateTimeWithTime("24/03/2022 19:00"))
+                .endDate(convertStringToLocalDateTimeWithTime("24/03/2022 21:00"))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 .organizerId(1L)
                 .build();
 
@@ -80,8 +84,11 @@ public class EventControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("title").value(dto.getTitle()))
                 .andExpect(jsonPath("description").value(dto.getDescription()))
-                .andExpect(jsonPath("eventStart").value(formatDateToString(dto.getEventStart())))
-                .andExpect(jsonPath("eventEnd").value(formatDateToString(dto.getEventEnd())))
+                .andExpect(jsonPath("startDate")
+                        .value(formatLocalDateTimeToStringWithTime(dto.getStartDate())))
+                .andExpect(jsonPath("endDate")
+                        .value(formatLocalDateTimeToStringWithTime(dto.getEndDate())))
+                //.andExpect(jsonPath("eventTypeEnum").value(dto.getEventTypeEnum().ordinal()))
                 .andExpect(jsonPath("organizerId").value(dto.getOrganizerId().toString()));
 
     }
@@ -150,10 +157,11 @@ public class EventControllerTest {
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("title").value(event.getTitle()))
                 .andExpect(jsonPath("description").value(event.getDescription()))
-                .andExpect(jsonPath("eventStart")
-                        .value(formatDateToString(event.getEventStart())))
-                .andExpect(jsonPath("eventEnd")
-                        .value(formatDateToString(event.getEventEnd())))
+                .andExpect(jsonPath("startDate")
+                        .value(formatLocalDateTimeToStringWithTime(event.getStartDate())))
+                .andExpect(jsonPath("endDate")
+                        .value(formatLocalDateTimeToStringWithTime(event.getEndDate())))
+                //.andExpect(jsonPath("eventTypeEnum").value(event.getEventTypeEnum().ordinal()))
                 .andExpect(jsonPath("organizerId")
                         .value(event.getOrganizerId()));
 
@@ -217,8 +225,9 @@ public class EventControllerTest {
                         .id(eventId)
                         .title("título XXXX")
                         .description("descrição XXXX ")
-                        .eventStart(getDateWithZeroTime(2022,3,10))
-                        .eventEnd(getDateWithZeroTime(2022,3,12))
+                        .startDate(LocalDateTime.of(2022,3,10,8,30))
+                        .endDate(LocalDateTime.of(2022,3,12,12,0))
+                        .eventTypeEnum(EventTypeEnum.ONLINE)
                         .organizerId(organizerId)
                         .build();
 
@@ -229,8 +238,9 @@ public class EventControllerTest {
                         .id(eventId)
                         .title("Encontro Mulheres e Carreira em Tecnologia")
                         .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                        .eventStart(getDateWithZeroTime(2022,3,24))
-                        .eventEnd(getDateWithZeroTime(2022,3,24))
+                        .startDate(LocalDateTime.of(2022,3,24,19,0))
+                        .endDate(LocalDateTime.of(2022,3,24,21,0))
+                        .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                         .organizerId(organizerId)
                         .build();
 
@@ -247,10 +257,11 @@ public class EventControllerTest {
                 .andExpect(jsonPath("id").value(eventId))
                 .andExpect(jsonPath("title").value(createNewEvent().getTitle()))
                 .andExpect(jsonPath("description").value(createNewEvent().getDescription()))
-                .andExpect(jsonPath("eventStart")
-                        .value(formatDateToString(createNewEvent().getEventStart())))
-                .andExpect(jsonPath("eventEnd")
-                        .value(formatDateToString(createNewEvent().getEventEnd())))
+                .andExpect(jsonPath("startDate")
+                        .value(formatLocalDateTimeToStringWithTime(createNewEvent().getStartDate())))
+                .andExpect(jsonPath("endDate")
+                        .value(formatLocalDateTimeToStringWithTime(createNewEvent().getEndDate())))
+                //.andExpect(jsonPath("eventTypeEnum").value(createNewEvent().getEventTypeEnum().ordinal()))
                 .andExpect(jsonPath("organizerId")
                         .value(organizerId));
 
@@ -281,8 +292,9 @@ public class EventControllerTest {
                 .id(11L)
                 .title("Womakerscode Dados")
                 .description("Womakerscode Dados é um evento realizado pela Womakerscode sobre Banco de Dados")
-                .eventStart(getDateWithZeroTime(2021,10,10))
-                .eventEnd(getDateWithZeroTime(2021,10,10))
+                .startDate(LocalDateTime.of(2022,10,10,10,0))
+                .endDate(LocalDateTime.of(2022,10,10,11,0))
+                .eventTypeEnum(EventTypeEnum.ONLINE)
                 .organizerId(1L)
                 .build();
 
@@ -290,9 +302,12 @@ public class EventControllerTest {
                 .willReturn(new PageImpl<Event>(List.of(event)
                         , PageRequest.of(0,100), 1));
 
-        String queryString = String.format("?title=%s&eventStart=%s&eventEnd=%s&organizerId=%d&page=0&size=100",
-                event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
-                event.getOrganizerId());
+//        String queryString = String.format("?title=%s&eventStart=%s&eventEnd=%s&organizerId=%d&page=0&size=100",
+//                event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
+//        event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
+//                event.getOrganizerId());
+        String queryString = String.format("?id=%d&organizerId=%d&page=0&size=100",
+                event.getId(), event.getOrganizerId());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -314,8 +329,9 @@ public class EventControllerTest {
                 //.id(101L)
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                .eventStart(getDateWithZeroTime(2022,3,24))
-                .eventEnd(getDateWithZeroTime(2022,3,24))
+                .startDate(convertStringToLocalDateTimeWithTime("24/03/2022 19:00"))
+                .endDate(convertStringToLocalDateTimeWithTime("24/03/2022 21:00"))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 //.organizerId(3L)
                 .build();
     }

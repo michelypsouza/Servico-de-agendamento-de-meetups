@@ -2,6 +2,7 @@ package com.womakerscode.microservicemeetups.service;
 
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Event;
+import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.repository.EventRepository;
 import com.womakerscode.microservicemeetups.service.impl.EventServiceImpl;
 import org.assertj.core.api.Assertions;
@@ -18,10 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -58,15 +59,17 @@ public class EventServiceTest {
         assertThat(savedEvent.getTitle()).isEqualTo("Encontro Mulheres e Carreira em Tecnologia");
         assertThat(savedEvent.getDescription())
                 .isEqualTo("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery");
-        assertThat(savedEvent.getEventStart()).isEqualTo(getDateWithZeroTime(2022,3,24));
-        assertThat(savedEvent.getEventEnd()).isEqualTo(getDateWithZeroTime(2022,3,24));
+        assertThat(savedEvent.getStartDate())
+                .isEqualTo(LocalDateTime.of(2022,3,24,19,0));
+        assertThat(savedEvent.getEndDate())
+                .isEqualTo(LocalDateTime.of(2022,3,24,21,0));
+        assertThat(savedEvent.getEventTypeEnum()).isEqualTo(EventTypeEnum.FACE_TO_FACE);
         assertThat(savedEvent.getOrganizerId()).isEqualTo(3L);
 
     }
 
     @Test
-    @DisplayName("Should throw business error when thy " +
-            "to save a new event with a event duplicated")
+    @DisplayName("Should throw business error when thy to save a new event with a event duplicated")
     public void shouldNotSaveAsEventDuplicated() {
 
         Event event = createValidEvent();
@@ -99,8 +102,11 @@ public class EventServiceTest {
         assertThat(foundEvent.get().getId()).isEqualTo(id);
         assertThat(foundEvent.get().getTitle()).isEqualTo(event.getTitle());
         assertThat(foundEvent.get().getDescription()).isEqualTo(event.getDescription());
-        assertThat(foundEvent.get().getEventStart()).isEqualTo(event.getEventStart());
-        assertThat(foundEvent.get().getEventEnd()).isEqualTo(event.getEventEnd());
+        assertThat(foundEvent.get().getStartDate())
+                .isEqualTo(event.getStartDate());
+        assertThat(foundEvent.get().getEndDate())
+                .isEqualTo(event.getEndDate());
+        assertThat(foundEvent.get().getEventTypeEnum()).isEqualTo(EventTypeEnum.FACE_TO_FACE);
         assertThat(foundEvent.get().getOrganizerId()).isEqualTo(event.getOrganizerId());
 
     }
@@ -141,8 +147,9 @@ public class EventServiceTest {
         assertThat(event.getId()).isEqualTo(updatedEvent.getId());
         assertThat(event.getTitle()).isEqualTo(updatedEvent.getTitle());
         assertThat(event.getDescription()).isEqualTo(updatedEvent.getDescription());
-        assertThat(event.getEventStart()).isEqualTo(updatedEvent.getEventStart());
-        assertThat(event.getEventEnd()).isEqualTo(updatedEvent.getEventEnd());
+        assertThat(event.getStartDate()).isEqualTo(updatedEvent.getStartDate());
+        assertThat(event.getEndDate()).isEqualTo(updatedEvent.getEndDate());
+        assertThat(event.getEventTypeEnum()).isEqualTo(updatedEvent.getEventTypeEnum());
         assertThat(event.getOrganizerId()).isEqualTo(updatedEvent.getOrganizerId());
 
     }
@@ -180,14 +187,15 @@ public class EventServiceTest {
         Event newEvent = createValidEvent();
 
         // execucao
-        Mockito.when(eventRepository.findByEventExistent(newEvent.getTitle(), newEvent.getEventStart()
-                , newEvent.getEventEnd(), newEvent.getOrganizerId()))
+        Mockito.when(eventRepository.findByEventExistent(newEvent.getTitle(), newEvent.getStartDate()
+                , newEvent.getEndDate(), newEvent.getOrganizerId()))
                 .thenReturn(Optional.of(
                         Event.builder()
                                 .id(101L)
                                 .title("Encontro Mulheres e Carreira em Tecnologia")
-                                .eventStart(getDateWithZeroTime(2022,3,24))
-                                .eventEnd(getDateWithZeroTime(2022,3,24))
+                                .startDate(LocalDateTime.of(2022,3,24,19,0))
+                                .endDate(LocalDateTime.of(2022,3,24,21,0))
+                                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                                 .organizerId(3L)
                                 .build()
                 ));
@@ -199,7 +207,7 @@ public class EventServiceTest {
         assertThat(eventExistent.get().getTitle()).isEqualTo(newEvent.getTitle());
 
         Mockito.verify(eventRepository, Mockito.times(1))
-                .findByEventExistent(newEvent.getTitle(), newEvent.getEventStart(), newEvent.getEventEnd()
+                .findByEventExistent(newEvent.getTitle(), newEvent.getStartDate(), newEvent.getEndDate()
                         , newEvent.getOrganizerId());
 
     }
@@ -209,8 +217,9 @@ public class EventServiceTest {
                 .id(101L)
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                .eventStart(getDateWithZeroTime(2022,3,24))
-                .eventEnd(getDateWithZeroTime(2022,3,24))
+                .startDate(LocalDateTime.of(2022,3,24,19,0))
+                .endDate(LocalDateTime.of(2022,3,24,21,0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 .organizerId(3L)
                 .build();
     }

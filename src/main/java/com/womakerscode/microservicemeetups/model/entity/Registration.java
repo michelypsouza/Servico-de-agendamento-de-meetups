@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class Registration {
     private String nameTag;
 
     @Column(name = "date_of_registration")
-    private Date dateOfRegistration;
+    private LocalDateTime dateOfRegistration;
 
     @ManyToOne
     @JoinColumn(name = "event_id")

@@ -11,10 +11,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.womakerscode.microservicemeetups.util.DateUtil.getCurrentDate;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -98,7 +98,7 @@ public class RegistrationRepositoryTest {
         return Registration.builder()
                 .id(11L)
                 .nameTag("Michely")
-                .dateOfRegistration(getCurrentDate())
+                .dateOfRegistration(LocalDateTime.now())
                 .event(Event.builder()
                         .id(eventId)
                         .build())

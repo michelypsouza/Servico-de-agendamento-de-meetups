@@ -1,39 +1,15 @@
 package com.womakerscode.microservicemeetups.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequest;
 import com.womakerscode.microservicemeetups.controller.resource.RegistrationController;
-import com.womakerscode.microservicemeetups.exception.BusinessException;
-import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Arrays;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
-import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
