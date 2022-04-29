@@ -80,7 +80,7 @@ public class EventControllerTest {
                 .andExpect(jsonPath("description").value(dto.getDescription()))
                 .andExpect(jsonPath("eventStart").value(formatDateToString(dto.getEventStart())))
                 .andExpect(jsonPath("eventEnd").value(formatDateToString(dto.getEventEnd())))
-                .andExpect(jsonPath("eventProducerId").value(dto.getOrganizerId()));
+                .andExpect(jsonPath("organizerId").value(dto.getOrganizerId().toString()));
 
     }
 
