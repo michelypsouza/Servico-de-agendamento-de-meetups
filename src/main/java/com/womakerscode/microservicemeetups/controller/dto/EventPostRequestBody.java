@@ -17,11 +17,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class EventPostRequestBody {
 
-//    private Integer id;
-
-//    @NotNull(message = "The participant cannot be empty")
-//    private Long participantId;
-
     @NotEmpty(message = "The title of the event cannot be empty")
     private String title;
 

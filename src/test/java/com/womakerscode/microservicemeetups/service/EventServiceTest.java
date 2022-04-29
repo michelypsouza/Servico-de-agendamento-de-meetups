@@ -58,8 +58,8 @@ public class EventServiceTest {
         assertThat(savedEvent.getTitle()).isEqualTo("Encontro Mulheres e Carreira em Tecnologia");
         assertThat(savedEvent.getDescription())
                 .isEqualTo("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery");
-        assertThat(savedEvent.getEventStart()).isEqualTo(getDateWithZeroTime(2021,10,10));
-        assertThat(savedEvent.getEventEnd()).isEqualTo(getDateWithZeroTime(2021,10,10));
+        assertThat(savedEvent.getEventStart()).isEqualTo(getDateWithZeroTime(2022,3,24));
+        assertThat(savedEvent.getEventEnd()).isEqualTo(getDateWithZeroTime(2022,3,24));
         assertThat(savedEvent.getOrganizerId()).isEqualTo(3L);
 
     }
@@ -186,8 +186,8 @@ public class EventServiceTest {
                         Event.builder()
                                 .id(101L)
                                 .title("Encontro Mulheres e Carreira em Tecnologia")
-                                .eventStart(getDateWithZeroTime(2021,10,10))
-                                .eventEnd(getDateWithZeroTime(2021,10,10))
+                                .eventStart(getDateWithZeroTime(2022,3,24))
+                                .eventEnd(getDateWithZeroTime(2022,3,24))
                                 .organizerId(3L)
                                 .build()
                 ));
@@ -209,8 +209,8 @@ public class EventServiceTest {
                 .id(101L)
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                .eventStart(getDateWithZeroTime(2021,10,10))
-                .eventEnd(getDateWithZeroTime(2021,10,10))
+                .eventStart(getDateWithZeroTime(2022,3,24))
+                .eventEnd(getDateWithZeroTime(2022,3,24))
                 .organizerId(3L)
                 .build();
     }

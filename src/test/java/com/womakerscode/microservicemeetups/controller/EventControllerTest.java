@@ -25,10 +25,12 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static com.womakerscode.microservicemeetups.util.DateUtil.formatDateToString;
 import static com.womakerscode.microservicemeetups.util.DateUtil.getDateWithZeroTime;
+import static org.mockito.Mockito.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,8 +55,8 @@ public class EventControllerTest {
         EventPostRequestBody dto = EventPostRequestBody.builder()
                 .title("Womakerscode Dados")
                 .description("Palestra organizada pela Womakerscode sobre Dados")
-                .eventStart(getDateWithZeroTime(2021,10,10))
-                .eventEnd(getDateWithZeroTime(2021,10,10))
+                .eventStart(getDateWithZeroTime(2022,3,24))
+                .eventEnd(getDateWithZeroTime(2022,3,24))
                 .organizerId(1L)
                 .build();
         String json = new ObjectMapper().writeValueAsString(dto);
@@ -62,8 +64,8 @@ public class EventControllerTest {
         Event event = Event.builder()
                 .title("Womakerscode Dados")
                 .description("Palestra organizada pela Womakerscode sobre Dados")
-                .eventStart(getDateWithZeroTime(2021,10,10))
-                .eventEnd(getDateWithZeroTime(2021,10,10))
+                .eventStart(getDateWithZeroTime(2022,3,24))
+                .eventEnd(getDateWithZeroTime(2022,3,24))
                 .organizerId(1L)
                 .build();
 
@@ -128,6 +130,150 @@ public class EventControllerTest {
 //    }
 
     @Test
+    @DisplayName("Should get event information")
+    public void getEventTest() throws Exception {
+
+        Long id = 11L;
+        Event event = createNewEvent();
+        event.setId(id);
+        event.setOrganizerId(21L);
+
+        BDDMockito.given(eventService.getById(id)).willReturn(Optional.of(event));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(EVENT_API.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("title").value(event.getTitle()))
+                .andExpect(jsonPath("description").value(event.getDescription()))
+                .andExpect(jsonPath("eventStart")
+                        .value(formatDateToString(event.getEventStart())))
+                .andExpect(jsonPath("eventEnd")
+                        .value(formatDateToString(event.getEventEnd())))
+                .andExpect(jsonPath("organizerId")
+                        .value(event.getOrganizerId()));
+
+    }
+
+    @Test
+    @DisplayName("Should return not found when the event doesn't exists")
+    public void eventNotFoundTest() throws Exception {
+
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(EVENT_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    @DisplayName("Should delete the event")
+    public void deleteEvent() throws Exception {
+
+        BDDMockito.given(eventService.getById(anyLong()))
+                .willReturn(Optional.of(Event.builder().id(101L).build()));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(EVENT_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Should return resource not found when no event is found to delete")
+    public void deleteNonExistentEventTest() throws Exception {
+
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(EVENT_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    @DisplayName("Should update when event info")
+    public void updateEventTest() throws Exception {
+
+        Long eventId = 34L;
+        Long organizerId = 3L;
+        String json = new ObjectMapper().writeValueAsString(createNewEvent());
+
+        Event updatingEvent =
+                Event.builder()
+                        .id(eventId)
+                        .title("título XXXX")
+                        .description("descrição XXXX ")
+                        .eventStart(getDateWithZeroTime(2022,3,10))
+                        .eventEnd(getDateWithZeroTime(2022,3,12))
+                        .organizerId(organizerId)
+                        .build();
+
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.of(updatingEvent));
+
+        Event updatedEvent =
+                Event.builder()
+                        .id(eventId)
+                        .title("Encontro Mulheres e Carreira em Tecnologia")
+                        .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                        .eventStart(getDateWithZeroTime(2022,3,24))
+                        .eventEnd(getDateWithZeroTime(2022,3,24))
+                        .organizerId(organizerId)
+                        .build();
+
+        BDDMockito.given(eventService.update(updatingEvent)).willReturn(updatedEvent);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(EVENT_API.concat("/" + 1))
+                .contentType(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(eventId))
+                .andExpect(jsonPath("title").value(createNewEvent().getTitle()))
+                .andExpect(jsonPath("description").value(createNewEvent().getDescription()))
+                .andExpect(jsonPath("eventStart")
+                        .value(formatDateToString(createNewEvent().getEventStart())))
+                .andExpect(jsonPath("eventEnd")
+                        .value(formatDateToString(createNewEvent().getEventEnd())))
+                .andExpect(jsonPath("organizerId")
+                        .value(organizerId));
+
+    }
+
+    @Test
+    @DisplayName("Should return 404 when try to update an event no existent")
+    public void updateNonExistentEventTest() throws Exception {
+
+        String json = new ObjectMapper().writeValueAsString(createNewEvent());
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(EVENT_API.concat("/" + 1))
+                .contentType(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("Should filter event")
     public void findEventTest() throws Exception {
 
@@ -141,7 +287,7 @@ public class EventControllerTest {
                 .build();
 
         BDDMockito.given(eventService.find(Mockito.any(Event.class), Mockito.any(Pageable.class)) )
-                .willReturn(new PageImpl<Event>(Arrays.asList(event)
+                .willReturn(new PageImpl<Event>(List.of(event)
                         , PageRequest.of(0,100), 1));
 
         String queryString = String.format("?title=%s&eventStart=%s&eventEnd=%s&organizerId=%d&page=0&size=100",
@@ -161,6 +307,17 @@ public class EventControllerTest {
                 .andExpect(jsonPath("pageable.pageSize").value(100))
                 .andExpect(jsonPath("pageable.pageNumber").value(0));
 
+    }
+
+    private Event createNewEvent() {
+        return Event.builder()
+                //.id(101L)
+                .title("Encontro Mulheres e Carreira em Tecnologia")
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .eventStart(getDateWithZeroTime(2022,3,24))
+                .eventEnd(getDateWithZeroTime(2022,3,24))
+                //.organizerId(3L)
+                .build();
     }
 
 }

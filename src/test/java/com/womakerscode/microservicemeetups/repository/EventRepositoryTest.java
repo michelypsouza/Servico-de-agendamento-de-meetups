@@ -77,8 +77,8 @@ public class EventRepositoryTest {
         return Event.builder()
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                .eventStart(getDateWithZeroTime(2021,10,10))
-                .eventEnd(getDateWithZeroTime(2021,10,10))
+                .eventStart(getDateWithZeroTime(2022,3,24))
+                .eventEnd(getDateWithZeroTime(2022,3,24))
                 .organizerId(3L)
                 .build();
     }
