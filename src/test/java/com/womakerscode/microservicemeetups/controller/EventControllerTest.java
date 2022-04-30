@@ -4,6 +4,7 @@ import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.EventPutRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.controller.resource.EventController;
+import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.service.EventService;
@@ -58,8 +59,6 @@ public class EventControllerTest {
         EventPostRequestBody dto = EventPostRequestBody.builder()
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-//                .startDate("24/03/2022 19:00")
-//                .endDate("24/03/2022 21:00")
                 .startDate(formatLocalDateTimeToStringWithTime(LocalDateTime.of(2022,3,24,19,0)))
                 .endDate(formatLocalDateTimeToStringWithTime(LocalDateTime.of(2022,3,24,21,0)))
                 .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
@@ -111,32 +110,43 @@ public class EventControllerTest {
 
     }
 
-    // testar duplicidade
+    @Test
+    @DisplayName("Should return error when trying to register an event already registered for the same organizer")
+    public void  createEventErrorDuplicatedTest() throws Exception {
 
-//    @Test
-//    @DisplayName("Should return error when try to register a registration already register on a meetup")
-//    public void  meetupRegistrationErrorOnCreateMeetupTest() throws Exception {
-//
-//        EventPostRequestBody dto = EventPostRequestBody.builder().registrationAttribute("123").event("Womakerscode Dados").build();
-//        String json = new ObjectMapper().writeValueAsString(dto);
-//
-//
-//        Registration registration = Registration.builder().id(11).name("Ana Neri").registrationNumber("123").build();
-//        BDDMockito.given(registrationService.getRegistrationByRegistrationNumber("123"))
-//                .willReturn(Optional.of(registration));
-//
-//        // procura na base se ja tem algum registration pra esse meetup
-//        BDDMockito.given(eventService.save(Mockito.any(Meetup.class))).willThrow(new BusinessException("Meetup already enrolled"));
-//
-//
-//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(EVENT_API)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(json);
-//
-//        mockMvc.perform(requestBuilder)
-//                .andExpect(status().isBadRequest());
-//    }
+        Event event = createNewEvent();
+        event.setId(105L);
+        event.setOrganizerId(42L);
+
+        EventPostRequestBody dto = EventPostRequestBody.builder()
+                .title(event.getTitle())
+                .description(event.getDescription())
+                .startDate(formatLocalDateTimeToStringWithTime(event.getStartDate()))
+                .endDate(formatLocalDateTimeToStringWithTime(event.getEndDate()))
+                .eventTypeEnum(event.getEventTypeEnum())
+                .organizerId(event.getOrganizerId())
+                .build();
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        Event duplicatedEvent = createNewEvent();
+        duplicatedEvent.setId(event.getId());
+        duplicatedEvent.setOrganizerId(event.getOrganizerId());
+
+        BDDMockito.given(eventService.findByEventExistent(event)).willReturn(Optional.of(duplicatedEvent));
+
+        // procura na base se ja tem algum evento existente
+        BDDMockito.given(eventService.save(Mockito.any(Event.class)))
+                .willThrow(new BusinessException("Event already enrolled"));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(EVENT_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     @DisplayName("Should get event information")
@@ -338,10 +348,6 @@ public class EventControllerTest {
                 .willReturn(new PageImpl<Event>(List.of(event)
                         , PageRequest.of(0,100), 1));
 
-//        String queryString = String.format("?title=%s&eventStart=%s&eventEnd=%s&organizerId=%d&page=0&size=100",
-//                event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
-//        event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
-//                event.getOrganizerId());
         String queryString = String.format("?id=%d&title=%s&page=0&size=100",
                 event.getId(), event.getTitle());
 
@@ -362,14 +368,12 @@ public class EventControllerTest {
 
     private Event createNewEvent() {
         return Event.builder()
-                //.id(101L)
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
                 .creationDate(LocalDateTime.now())
                 .startDate(LocalDateTime.of(2022,3,24,19,0))
                 .endDate(LocalDateTime.of(2022,3,24,21,0))
                 .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
-                //.organizerId(3L)
                 .build();
     }
 
