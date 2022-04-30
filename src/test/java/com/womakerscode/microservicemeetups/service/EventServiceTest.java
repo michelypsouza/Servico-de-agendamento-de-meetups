@@ -154,7 +154,7 @@ public class EventServiceTest {
     public void eventNotFoundByIdTest() {
         Long id = 11L;
         Mockito.when(eventRepository.findById(id)).thenReturn(Optional.empty());
-        Optional<Event> event  = eventService.getById(id);
+        Optional<Event> event = eventService.getById(id);
         assertThat(event.isPresent()).isFalse();
     }
 
