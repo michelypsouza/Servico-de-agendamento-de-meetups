@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query(value = " select e from Event e where e.title = :title and e.startDate = :startDate " +
+    @Query(value = " select e from Event as e where e.title = :title and e.startDate = :startDate " +
             "and e.endDate = :endDate and e.organizerId = :organizerId ")
     Optional<Event> findByEventExistent(@Param("title") String title,
                                     @Param("eventStart") LocalDateTime startDate,

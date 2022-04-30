@@ -1,6 +1,12 @@
 package com.womakerscode.microservicemeetups.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
+import com.womakerscode.microservicemeetups.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,11 +38,18 @@ public class Event {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
     @Column(name = "end_date")
     private LocalDateTime endDate;
+
 
     @Enumerated(EnumType.ORDINAL)
     private EventTypeEnum eventTypeEnum;

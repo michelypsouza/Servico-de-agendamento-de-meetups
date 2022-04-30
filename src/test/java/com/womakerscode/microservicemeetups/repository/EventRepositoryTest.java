@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.womakerscode.microservicemeetups.util.DateUtil.convertStringToLocalDateTimeWithTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -77,6 +78,8 @@ public class EventRepositoryTest {
         return Event.builder()
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+//                .startDate(convertStringToLocalDateTimeWithTime("24/03/2022 19:00"))
+//                .endDate(convertStringToLocalDateTimeWithTime("24/03/2022 21:00"))
                 .startDate(LocalDateTime.of(2022,3,24,19,0))
                 .endDate(LocalDateTime.of(2022,3,24,21,0))
                 .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
