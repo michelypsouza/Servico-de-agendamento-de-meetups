@@ -1,6 +1,7 @@
 package com.womakerscode.microservicemeetups.controller;
 
 import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.EventPutRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.controller.resource.EventController;
 import com.womakerscode.microservicemeetups.model.entity.Event;
@@ -89,8 +90,8 @@ public class EventControllerTest {
                 .andExpect(jsonPath("description").value(dto.getDescription()))
                 .andExpect(jsonPath("startDate").value(dto.getStartDate()))
                 .andExpect(jsonPath("endDate").value(dto.getEndDate()))
-                //.andExpect(jsonPath("eventTypeEnum").value(dto.getEventTypeEnum().ordinal()))
-                .andExpect(jsonPath("organizerId").value(dto.getOrganizerId().toString()));
+                .andExpect(jsonPath("eventTypeEnum").value(dto.getEventTypeEnum().name()))
+                .andExpect(jsonPath("organizerId").value(dto.getOrganizerId()));
 
     }
 
@@ -171,7 +172,7 @@ public class EventControllerTest {
                 .andExpect(jsonPath("description").value(eventResponse.getDescription()))
                 .andExpect(jsonPath("startDate").value(eventResponse.getStartDate()))
                 .andExpect(jsonPath("endDate").value(eventResponse.getEndDate()))
-                //.andExpect(jsonPath("eventTypeEnum").value(eventResponse.getEventTypeEnum().ordinal()))
+                .andExpect(jsonPath("eventTypeEnum").value(eventResponse.getEventTypeEnum().name()))
                 .andExpect(jsonPath("organizerId")
                         .value(eventResponse.getOrganizerId()));
 
@@ -260,7 +261,7 @@ public class EventControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put(EVENT_API.concat("/" + 1))
-                .contentType(json)
+                .content(json)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -271,7 +272,7 @@ public class EventControllerTest {
                 .andExpect(jsonPath("description").value(createNewEvent().getDescription()))
                 .andExpect(jsonPath("startDate").value((createNewEvent().getStartDate())))
                 .andExpect(jsonPath("endDate").value((createNewEvent().getEndDate())))
-                //.andExpect(jsonPath("eventTypeEnum").value(createNewEvent().getEventTypeEnum().ordinal()))
+                .andExpect(jsonPath("eventTypeEnum").value(createNewEvent().getEventTypeEnum().name()))
                 .andExpect(jsonPath("organizerId").value(organizerId));
 
     }
@@ -280,12 +281,23 @@ public class EventControllerTest {
     @DisplayName("Should return 404 when try to update an event no existent")
     public void updateNonExistentEventTest() throws Exception {
 
-        String json = new ObjectMapper().writeValueAsString(createNewEvent());
+        Event event = createNewEvent();
+        event.setId(11L);
+        event.setOrganizerId(21L);
+
+        EventPutRequestBody eventPutRequestBody = EventPutRequestBody.builder()
+                .title(event.getTitle())
+                .description(event.getDescription())
+                .startDate(formatLocalDateTimeToStringWithTime(event.getStartDate()))
+                .endDate(formatLocalDateTimeToStringWithTime(event.getEndDate()))
+                .build();
+
+        String json = new ObjectMapper().writeValueAsString(eventPutRequestBody);
         BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.empty());
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put(EVENT_API.concat("/" + 1))
-                .contentType(json)
+                .put(EVENT_API.concat("/1"))
+                .content(json)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
