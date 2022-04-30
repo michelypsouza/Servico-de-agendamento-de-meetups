@@ -1,6 +1,5 @@
 package com.womakerscode.microservicemeetups.service;
 
-import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
@@ -47,26 +46,8 @@ public class EventServiceTest {
     public void saveEvent() {
 
         // cenario
-        EventResponse eventResponse = createValidEvent();
-        Event event = Event.builder()
-                .id(eventResponse.getId())
-                .title(eventResponse.getTitle())
-                .description(eventResponse.getDescription())
-                .startDate(eventResponse.getStartDate())
-                .endDate(eventResponse.getEndDate())
-                .eventTypeEnum(eventResponse.getEventTypeEnum())
-                .organizerId(eventResponse.getOrganizerId())
-                .build();
-        EventResponse returnedEventResponse = createValidEvent();
-        Event returnedEvent = Event.builder()
-                .id(returnedEventResponse.getId())
-                .title(returnedEventResponse.getTitle())
-                .description(returnedEventResponse.getDescription())
-                .startDate(returnedEventResponse.getStartDate())
-                .endDate(returnedEventResponse.getEndDate())
-                .eventTypeEnum(returnedEventResponse.getEventTypeEnum())
-                .organizerId(returnedEventResponse.getOrganizerId())
-                .build();
+        Event event = createValidEvent();
+        Event returnedEvent = createValidEvent();
 
         // execucao
         Mockito.when(eventRepository.findByEventExistent(Mockito.anyString(), Mockito.any(), Mockito.any(),
@@ -92,16 +73,7 @@ public class EventServiceTest {
     @DisplayName("Should throw business error when thy to save a new event with a event duplicated")
     public void shouldNotSaveAsEventDuplicated() {
 
-        EventResponse eventResponse = createValidEvent();
-        Event event = Event.builder()
-                .id(eventResponse.getId())
-                .title(eventResponse.getTitle())
-                .description(eventResponse.getDescription())
-                .startDate(eventResponse.getStartDate())
-                .endDate(eventResponse.getEndDate())
-                .eventTypeEnum(eventResponse.getEventTypeEnum())
-                .organizerId(eventResponse.getOrganizerId())
-                .build();
+        Event event = createValidEvent();
 
         Mockito.when(eventRepository.findByEventExistent(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.anyLong())).thenReturn(Optional.of(event));
@@ -120,16 +92,8 @@ public class EventServiceTest {
 
         // cenario
         Long id = 11L;
-        EventResponse eventResponse = createValidEvent();
-        Event event = Event.builder()
-                .id(id)
-                .title(eventResponse.getTitle())
-                .description(eventResponse.getDescription())
-                .startDate(eventResponse.getStartDate())
-                .endDate(eventResponse.getEndDate())
-                .eventTypeEnum(eventResponse.getEventTypeEnum())
-                .organizerId(eventResponse.getOrganizerId())
-                .build();
+        Event event = createValidEvent();
+        event.setId(11L);
         Mockito.when(eventRepository.findById(id)).thenReturn(Optional.of(event));
 
         // execucao
@@ -175,14 +139,7 @@ public class EventServiceTest {
         Event updatingEvent = Event.builder().id(id).title("Encontro Mulheres e Carreira em Tecnologia 2022").build();
 
         // execucao
-        EventResponse updatedEventResponse = createValidEvent();
-        Event updatedEvent = Event.builder()
-                .description(updatedEventResponse.getDescription())
-                .startDate(updatedEventResponse.getStartDate())
-                .endDate(updatedEventResponse.getEndDate())
-                .eventTypeEnum(updatedEventResponse.getEventTypeEnum())
-                .organizerId(updatedEventResponse.getOrganizerId())
-                .build();
+        Event updatedEvent = createValidEvent();
 
         updatedEvent.setId(id);
         updatedEvent.setTitle("Encontro Mulheres e Carreira em Tecnologia 2022");
@@ -205,16 +162,7 @@ public class EventServiceTest {
     public void findEventTest() {
 
         // cenario
-        EventResponse eventResponse = createValidEvent();
-        Event event = Event.builder()
-                .id(eventResponse.getId())
-                .title(eventResponse.getTitle())
-                .description(eventResponse.getDescription())
-                .startDate(eventResponse.getStartDate())
-                .endDate(eventResponse.getEndDate())
-                .eventTypeEnum(eventResponse.getEventTypeEnum())
-                .organizerId(eventResponse.getOrganizerId())
-                .build();
+        Event event = createValidEvent();
         PageRequest pageRequest = PageRequest.of(0,10);
 
         List<Event> listEvents = List.of(event);
@@ -239,16 +187,7 @@ public class EventServiceTest {
     public void getRegisteredEvent() {
 
         // cenario
-        EventResponse newEventResponse = createValidEvent();
-        Event newEvent = Event.builder()
-                .id(newEventResponse.getId())
-                .title(newEventResponse.getTitle())
-                .description(newEventResponse.getDescription())
-                .startDate(newEventResponse.getStartDate())
-                .endDate(newEventResponse.getEndDate())
-                .eventTypeEnum(newEventResponse.getEventTypeEnum())
-                .organizerId(newEventResponse.getOrganizerId())
-                .build();
+        Event newEvent = createValidEvent();
 
         // execucao
         Mockito.when(eventRepository.findByEventExistent(newEvent.getTitle(), newEvent.getStartDate()
@@ -276,8 +215,8 @@ public class EventServiceTest {
 
     }
 
-    private EventResponse createValidEvent() {
-        return EventResponse.builder()
+    private Event createValidEvent() {
+        return Event.builder()
                 .id(101L)
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")

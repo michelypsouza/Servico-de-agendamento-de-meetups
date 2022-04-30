@@ -31,6 +31,7 @@ public class Registration {
     @Column(name = "name_tag")
     private String nameTag;
 
+    //@JsonSerialize(as = Date.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)

@@ -11,7 +11,7 @@ public class RegistrationFilterDTO {
 
     private String nameTag;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_PATTERN_DEFAULT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
     private Date dateOfRegistration;
 
     private Long eventId;

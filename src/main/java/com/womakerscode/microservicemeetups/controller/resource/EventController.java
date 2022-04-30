@@ -1,6 +1,9 @@
 package com.womakerscode.microservicemeetups.controller.resource;
 
-import com.womakerscode.microservicemeetups.controller.dto.*;
+import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.EventPutRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.EventRequestFilter;
+import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,8 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.womakerscode.microservicemeetups.util.DateUtil.convertStringToLocalDateTimeWithTime;
 
 @RestController
 @RequestMapping("/api/event")
@@ -52,13 +57,14 @@ public class EventController {
     }
 
     @PutMapping("{id}")
-    public EventResponse update(@PathVariable Long id, EventPutRequestBody eventPutRequestBody) {
+    public EventResponse update(@PathVariable Long id,
+                                @RequestBody @Valid EventPutRequestBody eventPutRequestBody) {
         return eventService.getById(id)
                 .map(event -> {
                     event.setTitle(eventPutRequestBody.getTitle());
                     event.setDescription(eventPutRequestBody.getDescription());
-                    event.setStartDate(eventPutRequestBody.getStartDate());
-                    event.setEndDate(eventPutRequestBody.getEndDate());
+                    event.setStartDate(convertStringToLocalDateTimeWithTime(eventPutRequestBody.getStartDate()));
+                    event.setEndDate(convertStringToLocalDateTimeWithTime(eventPutRequestBody.getEndDate()));
                     event = eventService.update(event);
                     return modelMapper.map(event, EventResponse.class);
                 })
