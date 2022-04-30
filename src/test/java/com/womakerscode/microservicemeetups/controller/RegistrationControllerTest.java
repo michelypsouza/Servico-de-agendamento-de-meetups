@@ -1,15 +1,38 @@
 package com.womakerscode.microservicemeetups.controller;
 
+import com.womakerscode.microservicemeetups.controller.dto.EventRequest;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationResponse;
 import com.womakerscode.microservicemeetups.controller.resource.RegistrationController;
+import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.anyLong;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -98,38 +121,38 @@ public class RegistrationControllerTest {
 //                .andExpect(jsonPath("errors", hasSize(1)))
 //                .andExpect(jsonPath("errors[0]").value("Registration already created"));
 //    }
-//
-//    @Test
-//    @DisplayName("Should get registration information")
-//    public void getRegistrationTest() throws Exception {
-//
-//        Integer id = 11;
-//
-//        Registration registration = Registration.builder()
-//                .id(id)
-//                .name(createNewRegistration().getName())
-//                .dateOfRegistration(createNewRegistration().getDateOfRegistration())
+
+    @Test
+    @DisplayName("Should get registration information")
+    public void getRegistrationTest() throws Exception {
+
+        Long id = 11L;
+
+        Registration registration = Registration.builder()
+                .id(id)
+                .nameTag(createNewRegistration().getNameTag())
+                .dateOfRegistration(createNewRegistration().getDateOfRegistration())
 //                .registrationNumber(createNewRegistration().getRegistrationNumber())
-//                .build();
-//
-//        BDDMockito.given(registrationService.getRegistrationById(id)).willReturn(Optional.of(registration));
-//
-//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .get(REGISTRATION_API.concat("/" + id))
-//                .accept(MediaType.APPLICATION_JSON);
-//
-//        mockMvc
-//                .perform(requestBuilder)
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("id").value(id))
-//                .andExpect(jsonPath("name").value(createNewRegistration().getName()))
-//                .andExpect(jsonPath("dateOfRegistration")
-//                        .value(formatDateToString(createNewRegistration().getDateOfRegistration())))
+                .build();
+
+        BDDMockito.given(registrationService.getRegistrationById(id)).willReturn(Optional.of(registration));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(REGISTRATION_API.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("nameTag").value(createNewRegistration().getNameTag()))
+                .andExpect(jsonPath("dateOfRegistration")
+                        .value(createNewRegistration().getDateOfRegistration()));
 //                .andExpect(jsonPath("registrationNumber")
 //                        .value(createNewRegistration().getRegistrationNumber()));
-//
-//    }
-//
+
+    }
+
 //    @Test
 //    @DisplayName("Should return NOT FOUND when the registration doesn't exists")
 //    public void registrationNotFoundTest() throws Exception {
@@ -274,14 +297,16 @@ public class RegistrationControllerTest {
 //                .andExpect(jsonPath("pageable.pageNumber"). value(0));
 //
 //    }
-//
-//    private RegistrationRequest createNewRegistration() {
-//        return RegistrationRequest.builder()
-//                .id(101)
-//                .name("Michely Souza")
-//                .dateOfRegistration(getDateWithZeroTime(2021,10,10))
-//                .registrationNumber("001")
-//                .build();
-//    }
+
+    private RegistrationResponse createNewRegistration() {
+        return RegistrationResponse.builder()
+                .id(101L)
+                .nameTag("Michely Souza")
+                .dateOfRegistration(LocalDateTime.now())
+                //.registrationNumber("001")
+                .eventRequest(EventRequest.builder().id(55L).build())
+                .participantId(25L)
+                .build();
+    }
 
 }

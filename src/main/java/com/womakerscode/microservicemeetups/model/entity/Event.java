@@ -35,6 +35,9 @@ public class Event {
     @Column
     private String description;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
@@ -49,7 +52,6 @@ public class Event {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
     @Column(name = "end_date")
     private LocalDateTime endDate;
-
 
     @Enumerated(EnumType.ORDINAL)
     private EventTypeEnum eventTypeEnum;

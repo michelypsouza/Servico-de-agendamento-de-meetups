@@ -301,8 +301,8 @@ public class EventControllerTest {
 //                event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
 //        event.getTitle(), formatDateToString(event.getEventStart()), formatDateToString(event.getEventEnd()),
 //                event.getOrganizerId());
-        String queryString = String.format("?id=%d&organizerId=%d&page=0&size=100",
-                event.getId(), event.getOrganizerId());
+        String queryString = String.format("?id=%d&title=%s&page=0&size=100",
+                event.getId(), event.getTitle());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders

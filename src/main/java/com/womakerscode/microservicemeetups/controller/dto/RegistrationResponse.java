@@ -1,4 +1,4 @@
-package com.womakerscode.microservicemeetups.model.entity;
+package com.womakerscode.microservicemeetups.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -11,38 +11,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table
-public class Registration {
+public class RegistrationResponse {
 
-    @Id
-    @Column(name = "registration_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // badge / name tag
-    @Column(name = "name_tag")
     private String nameTag;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
-    @Column(name = "date_of_registration")
     private LocalDateTime dateOfRegistration;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
+    private EventRequest eventRequest;
 
-    // participant user
-    @Column(name = "participant_id")
     private Long participantId;
 
 }

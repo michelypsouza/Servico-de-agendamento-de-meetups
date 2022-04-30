@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EventFilterDTO {
+public class EventRequestFilter {
 
-    private Long participantId;
+    private Long id;
 
     private String title;
+
+//    private Long participantId;
 
 }

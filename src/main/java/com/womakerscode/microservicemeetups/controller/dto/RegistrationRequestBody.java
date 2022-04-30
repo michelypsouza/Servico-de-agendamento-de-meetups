@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationPostRequestBody {
+public class RegistrationRequestBody {
 
     @NotEmpty(message = "The name tag cannot be empty")
     private String nameTag;

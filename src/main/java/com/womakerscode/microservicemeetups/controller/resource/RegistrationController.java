@@ -1,8 +1,9 @@
 package com.womakerscode.microservicemeetups.controller.resource;
 
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationFilterDTO;
-import com.womakerscode.microservicemeetups.controller.dto.RegistrationPostRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequest;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationResponse;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.EventService;
@@ -34,9 +35,8 @@ public class RegistrationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationRequest create(@RequestBody @Valid RegistrationPostRequestBody registrationPostRequestBody) {
+    public RegistrationResponse create(@RequestBody @Valid RegistrationRequestBody registrationPostRequestBody) {
 
-        //Event event = eventService.getEventByCodeEvent(registrationPostRequestBody.getCodeEvent())
         Event event = eventService.getById(registrationPostRequestBody.getEventId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
@@ -48,15 +48,15 @@ public class RegistrationController {
                 .build();
 
         entity = registrationService.save(entity);
-        return modelMapper.map(entity, RegistrationRequest.class);
+        return modelMapper.map(entity, RegistrationResponse.class);
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RegistrationRequest get(@PathVariable Long id) {
+    public RegistrationResponse get(@PathVariable Long id) {
         return registrationService
                 .getRegistrationById(id)
-                .map(registration -> modelMapper.map(registration, RegistrationRequest.class))
+                .map(registration -> modelMapper.map(registration, RegistrationResponse.class))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -69,7 +69,8 @@ public class RegistrationController {
     }
 
     @PutMapping("{id}")
-    public RegistrationRequest update(@PathVariable Long id, RegistrationPostRequestBody registrationRequest) {
+    public RegistrationResponse update(@PathVariable Long id
+            , @RequestBody @Valid RegistrationRequestBody registrationRequest) {
 
         Event event = eventService.getById(registrationRequest.getEventId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -80,23 +81,23 @@ public class RegistrationController {
                     registration.setEvent(event);
                     registration.setParticipantId(registrationRequest.getParticipantId());
                     registration = registrationService.update(registration);
-                    return modelMapper.map(registration, RegistrationRequest.class);
+                    return modelMapper.map(registration, RegistrationResponse.class);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
-    public Page<RegistrationRequest> find(RegistrationFilterDTO dto, Pageable pageRequest) {
+    public Page<RegistrationResponse> find(RegistrationFilterDTO dto, Pageable pageRequest) {
 
         Registration filter = modelMapper.map(dto, Registration.class);
         Page<Registration> result = registrationService.find(filter, pageRequest);
 
-        List<RegistrationRequest> list = result.getContent()
+        List<RegistrationResponse> list = result.getContent()
                 .stream()
-                .map(entity -> modelMapper.map(entity, RegistrationRequest.class))
+                .map(entity -> modelMapper.map(entity, RegistrationResponse.class))
                 .collect(Collectors.toList());
 
-        return new PageImpl<RegistrationRequest>(list, pageRequest, result.getTotalElements());
+        return new PageImpl<RegistrationResponse>(list, pageRequest, result.getTotalElements());
     }
 
     //    @GetMapping

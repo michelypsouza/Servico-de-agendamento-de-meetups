@@ -1,9 +1,6 @@
 package com.womakerscode.microservicemeetups.controller.resource;
 
-import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
-import com.womakerscode.microservicemeetups.controller.dto.EventPutRequestBody;
-import com.womakerscode.microservicemeetups.controller.dto.EventRequest;
-import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
+import com.womakerscode.microservicemeetups.controller.dto.*;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +66,8 @@ public class EventController {
     }
 
     @GetMapping
-    public Page<EventResponse> find(EventRequest eventRequest, Pageable pageRequest) {
-        Event filter = modelMapper.map(eventRequest, Event.class);
+    public Page<EventResponse> find(EventRequestFilter eventRequestFilter, Pageable pageRequest) {
+        Event filter = modelMapper.map(eventRequestFilter, Event.class);
         Page<Event> result = eventService.find(filter, pageRequest);
         List<EventResponse> events = result
                 .getContent()
