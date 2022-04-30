@@ -173,8 +173,7 @@ public class EventControllerTest {
                 .andExpect(jsonPath("startDate").value(eventResponse.getStartDate()))
                 .andExpect(jsonPath("endDate").value(eventResponse.getEndDate()))
                 .andExpect(jsonPath("eventTypeEnum").value(eventResponse.getEventTypeEnum().name()))
-                .andExpect(jsonPath("organizerId")
-                        .value(eventResponse.getOrganizerId()));
+                .andExpect(jsonPath("organizerId").value(eventResponse.getOrganizerId()));
 
     }
 
@@ -229,35 +228,49 @@ public class EventControllerTest {
 
         Long eventId = 34L;
         Long organizerId = 3L;
-        String json = new ObjectMapper().writeValueAsString(createNewEvent());
 
-        Event updatingEvent =
-                Event.builder()
-                        .id(eventId)
-                        .title("título XXXX")
-                        .description("descrição XXXX ")
-                        .creationDate(LocalDateTime.now())
-                        .startDate(LocalDateTime.of(2022,3,10,8,30))
-                        .endDate(LocalDateTime.of(2022,3,12,12,0))
-                        .eventTypeEnum(EventTypeEnum.ONLINE)
-                        .organizerId(organizerId)
-                        .build();
+        Event putEvent = createNewEvent();
+        putEvent.setId(eventId);
+        putEvent.setOrganizerId(organizerId);
 
-        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.of(updatingEvent));
+        EventResponse eventPutResponse = EventResponse.builder()
+                .id(putEvent.getId())
+                .title(putEvent.getTitle())
+                .description(putEvent.getDescription())
+                .creationDate(formatLocalDateTimeToStringWithTime(putEvent.getCreationDate()))
+                .startDate(formatLocalDateTimeToStringWithTime(putEvent.getStartDate()))
+                .endDate(formatLocalDateTimeToStringWithTime(putEvent.getEndDate()))
+                .eventTypeEnum(putEvent.getEventTypeEnum())
+                .organizerId(putEvent.getOrganizerId())
+                .build();
 
-        Event updatedEvent =
-                Event.builder()
-                        .id(eventId)
-                        .title("Encontro Mulheres e Carreira em Tecnologia")
-                        .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                        .creationDate(LocalDateTime.now())
-                        .startDate(LocalDateTime.of(2022,3,24,19,0))
-                        .endDate(LocalDateTime.of(2022,3,24,21,0))
-                        .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
-                        .organizerId(organizerId)
-                        .build();
+        EventPutRequestBody eventPutRequestBody = EventPutRequestBody.builder()
+                .title(putEvent.getTitle())
+                .description(putEvent.getDescription())
+                .startDate(formatLocalDateTimeToStringWithTime(putEvent.getStartDate()))
+                .endDate(formatLocalDateTimeToStringWithTime(putEvent.getEndDate()))
+                .build();
 
-        BDDMockito.given(eventService.update(updatingEvent)).willReturn(updatedEvent);
+        String json = new ObjectMapper().writeValueAsString(eventPutRequestBody);
+
+        Event eventReturnedFromDatabaseForUpdate = Event.builder()
+                .id(putEvent.getId())
+                .title("título XXXX")
+                .description("descrição XXXX ")
+                .creationDate(putEvent.getCreationDate())
+                .startDate(LocalDateTime.of(2022, 3, 10, 8, 30))
+                .endDate(LocalDateTime.of(2022, 3, 12, 12, 0))
+                .eventTypeEnum(putEvent.getEventTypeEnum())
+                .organizerId(putEvent.getOrganizerId())
+                .build();
+
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.of(eventReturnedFromDatabaseForUpdate));
+
+        Event updatedEvent = createNewEvent();
+        updatedEvent.setId(eventId);
+        updatedEvent.setOrganizerId(organizerId);
+
+        BDDMockito.given(eventService.update(eventReturnedFromDatabaseForUpdate)).willReturn(updatedEvent);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put(EVENT_API.concat("/" + 1))
@@ -268,12 +281,13 @@ public class EventControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(eventId))
-                .andExpect(jsonPath("title").value(createNewEvent().getTitle()))
-                .andExpect(jsonPath("description").value(createNewEvent().getDescription()))
-                .andExpect(jsonPath("startDate").value((createNewEvent().getStartDate())))
-                .andExpect(jsonPath("endDate").value((createNewEvent().getEndDate())))
-                .andExpect(jsonPath("eventTypeEnum").value(createNewEvent().getEventTypeEnum().name()))
-                .andExpect(jsonPath("organizerId").value(organizerId));
+                .andExpect(jsonPath("title").value(eventPutResponse.getTitle()))
+                .andExpect(jsonPath("description").value(eventPutResponse.getDescription()))
+                .andExpect(jsonPath("creationDate").value(eventPutResponse.getCreationDate()))
+                .andExpect(jsonPath("startDate").value(eventPutResponse.getStartDate()))
+                .andExpect(jsonPath("endDate").value(eventPutResponse.getEndDate()))
+                .andExpect(jsonPath("eventTypeEnum").value(eventPutResponse.getEventTypeEnum().name()))
+                .andExpect(jsonPath("organizerId").value(eventPutResponse.getOrganizerId()));
 
     }
 
