@@ -2,6 +2,7 @@ package com.womakerscode.microservicemeetups.repository;
 
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
+import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,14 +29,18 @@ public class RegistrationRepositoryTest {
     @Autowired
     RegistrationRepository registrationRepository;
 
+    @Autowired
+    EventRepository eventRepository;
+
     @Test
     @DisplayName("Must return true when an participant is registered for in the event.")
     public void returnTrueWhenParticipantIsRegisteredInEvent() {
 
-        Long eventId = 1L;
+        Registration registration = createNewRegistration(persistEvent());
 
-        Registration registration = createNewRegistration(eventId);
         entityManager.persist(registration);
+
+        Long eventId = registration.getEvent().getId();
 
         boolean exists = registrationRepository.findExistingRegistrationEvent(eventId, registration.getParticipantId())
                 .isPresent();
@@ -57,7 +63,7 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should get an registration by id from the base")
     public void findByIdTest() {
 
-        Registration newRegistration = createNewRegistration(1L);
+        Registration newRegistration = createNewRegistration(persistEvent());
         entityManager.persist(newRegistration);
 
         Optional<Registration> foundRegistration = registrationRepository.findById(newRegistration.getId());
@@ -70,7 +76,7 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should save an registration from the base")
     public void saveRegistrationTest() {
 
-        Registration newRegistration = createNewRegistration(1L);
+        Registration newRegistration = createNewRegistration(persistEvent());
 
         Registration savedRegistration = registrationRepository.save(newRegistration);
 
@@ -82,7 +88,7 @@ public class RegistrationRepositoryTest {
     @DisplayName("Should delete and registration from the base")
     public void deleteRegistration() {
 
-        Registration newRegistration = createNewRegistration(1L);
+        Registration newRegistration = createNewRegistration(persistEvent());
         entityManager.persist(newRegistration);
 
         Registration foundRegistration = entityManager.find(Registration.class, newRegistration.getId());
@@ -94,14 +100,27 @@ public class RegistrationRepositoryTest {
 
     }
 
-    public static Registration createNewRegistration(Long eventId) {
+    private Event persistEvent() {
+        Long numberRandom = new Random().nextLong();
+        Event event = Event.builder()
+//                .id(10L)
+                .id(numberRandom)
+                .title("Encontro Mulheres e Carreira em Tecnologia "+numberRandom.toString())
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .startDate(LocalDateTime.of(2022, 3, 24, 19, 0))
+                .endDate(LocalDateTime.of(2022, 3, 24, 21, 0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
+                .organizerId(3L)
+                .build();
+        return eventRepository.save(event);
+    }
+
+    public static Registration createNewRegistration(Event event) {
         return Registration.builder()
                 .id(11L)
                 .nameTag("Michely")
                 .dateOfRegistration(LocalDateTime.now())
-                .event(Event.builder()
-                        .id(eventId)
-                        .build())
+                .event(event)
                 .participantId(23L)
                 .build();
     }
