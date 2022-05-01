@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventResponse {
+public class RegistrationEventResponse {
 
     private Long id;
 
@@ -34,7 +34,5 @@ public class EventResponse {
     private EventTypeEnum eventTypeEnum;
 
     private Long organizerId;
-
-    private List<EventRegistrationResponse> registrations;
 
 }

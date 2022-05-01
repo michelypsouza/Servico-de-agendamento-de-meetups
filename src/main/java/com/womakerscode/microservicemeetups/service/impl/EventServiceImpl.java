@@ -61,7 +61,6 @@ public class EventServiceImpl implements EventService {
                         .withIgnoreNullValues()
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
         return eventRepository.findAll(example, pageable);
-//        return eventRepository.findByRegistrationOnEvent( filterDTO.getRegistration(), filterDTO.getEvent(), pageable );
     }
 
     @Override

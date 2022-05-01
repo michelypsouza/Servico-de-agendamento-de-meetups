@@ -12,15 +12,12 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationRequestBody {
-
-    @NotEmpty(message = "The name tag cannot be empty")
-    private String nameTag;
+public class RegistrationPutRequestBody {
 
     @NotNull(message = "The event cannot be empty")
     private Long eventId;
 
-    @NotNull(message = "The event cannot be empty")
-    private Long participantId;
+    @NotEmpty(message = "The name tag cannot be empty")
+    private String nameTag;
 
 }

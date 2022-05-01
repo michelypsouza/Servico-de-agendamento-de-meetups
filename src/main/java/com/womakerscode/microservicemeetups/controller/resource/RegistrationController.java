@@ -1,8 +1,8 @@
 package com.womakerscode.microservicemeetups.controller.resource;
 
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationFilterDTO;
-import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequestBody;
-import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequest;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationPostRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationPutRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationResponse;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
@@ -35,7 +35,7 @@ public class RegistrationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationResponse create(@RequestBody @Valid RegistrationRequestBody registrationPostRequestBody) {
+    public RegistrationResponse create(@RequestBody @Valid RegistrationPostRequestBody registrationPostRequestBody) {
 
         Event event = eventService.getById(registrationPostRequestBody.getEventId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -56,7 +56,11 @@ public class RegistrationController {
     public RegistrationResponse get(@PathVariable Long id) {
         return registrationService
                 .getRegistrationById(id)
-                .map(registration -> modelMapper.map(registration, RegistrationResponse.class))
+                .map(registration -> {
+                    //modelMapper.map(registration, RegistrationResponse.class);
+                    registration.setEvent(modelMapper.map(registration.getEvent(), Event.class));
+                    return modelMapper.map(registration, RegistrationResponse.class);
+                })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -70,7 +74,7 @@ public class RegistrationController {
 
     @PutMapping("{id}")
     public RegistrationResponse update(@PathVariable Long id
-            , @RequestBody @Valid RegistrationRequestBody registrationRequest) {
+            , @RequestBody @Valid RegistrationPutRequestBody registrationRequest) {
 
         Event event = eventService.getById(registrationRequest.getEventId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -79,7 +83,6 @@ public class RegistrationController {
                 .map(registration -> {
                     registration.setNameTag(registrationRequest.getNameTag());
                     registration.setEvent(event);
-                    registration.setParticipantId(registrationRequest.getParticipantId());
                     registration = registrationService.update(registration);
                     return modelMapper.map(registration, RegistrationResponse.class);
                 })

@@ -12,9 +12,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     @Query(value = " select r from Registration as r join r.event as e " +
             "where e.id = :eventId and r.participantId = :participantId ")
     Optional<Registration> findExistingRegistrationEvent(@Param("eventId") Long eventId,
-                              @Param("participantId") Long participantId);
+                                                         @Param("participantId") Long participantId);
 
-//    boolean existsByRegistration(String registrationNumber);
-
-//    Optional<Registration> findByRegistration(String registrationNumber);
 }

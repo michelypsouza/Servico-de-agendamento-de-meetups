@@ -4,7 +4,10 @@ import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.repository.RegistrationRepository;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,9 +22,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     public Registration save(Registration registration) {
-        //if (registrationRepository.findById(registration.getId()).isPresent()) {
-        if (registrationRepository.findExistingRegistrationEvent(
-                registration.getEvent().getId(), registration.getParticipantId()).isPresent()) {
+        if (findByExistingRegistrationForTheEvent(registration).isPresent()) {
             throw new BusinessException("Registration already created");
         }
         return registrationRepository.save(registration);
@@ -58,12 +59,13 @@ public class RegistrationServiceImpl implements RegistrationService {
                         .withIgnoreCase()
                         .withIgnoreNullValues()
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
-
         return registrationRepository.findAll(example, pageable);
     }
 
-//    @Override
-//    public Optional<Registration> getRegistrationByRegistrationNumber(String registrationNumber) {
-//        return registrationRepository.findByRegistration(registrationNumber);
-//    }
+    @Override
+    public Optional<Registration> findByExistingRegistrationForTheEvent(Registration registration) {
+        return registrationRepository.findExistingRegistrationEvent(registration.getEvent().getId(),
+                registration.getParticipantId());
+    }
+
 }
