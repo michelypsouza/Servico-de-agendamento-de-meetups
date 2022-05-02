@@ -44,7 +44,7 @@ public class Event {
     @Column(name = "organizer_id")
     private Long organizerId;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Registration> registrations;
 
 }

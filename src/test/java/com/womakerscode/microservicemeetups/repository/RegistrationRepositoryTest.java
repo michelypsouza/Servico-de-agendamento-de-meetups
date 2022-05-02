@@ -29,18 +29,14 @@ public class RegistrationRepositoryTest {
     @Autowired
     RegistrationRepository registrationRepository;
 
-    @Autowired
-    EventRepository eventRepository;
-
     @Test
     @DisplayName("Must return true when an participant is registered for in the event.")
     public void returnTrueWhenParticipantIsRegisteredInEvent() {
 
         Registration registration = createNewRegistration(persistEvent());
+        Registration savedRegistration = registrationRepository.save(registration);
 
-        entityManager.persist(registration);
-
-        Long eventId = registration.getEvent().getId();
+        Long eventId = savedRegistration.getEvent().getId();
 
         boolean exists = registrationRepository.findExistingRegistrationEvent(eventId, registration.getParticipantId())
                 .isPresent();
@@ -64,9 +60,10 @@ public class RegistrationRepositoryTest {
     public void findByIdTest() {
 
         Registration newRegistration = createNewRegistration(persistEvent());
-        entityManager.persist(newRegistration);
+        Registration savedRegistration = registrationRepository.save(newRegistration);
 
-        Optional<Registration> foundRegistration = registrationRepository.findById(newRegistration.getId());
+        Optional<Registration> foundRegistration = registrationRepository.findById(savedRegistration.getId());
+        //Registration foundRegistration = entityManager.find(Registration.class, savedRegistration.getId());
 
         assertThat(foundRegistration.isPresent()).isTrue();
 
@@ -89,9 +86,9 @@ public class RegistrationRepositoryTest {
     public void deleteRegistration() {
 
         Registration newRegistration = createNewRegistration(persistEvent());
-        entityManager.persist(newRegistration);
+        Registration savedRegistration = registrationRepository.save(newRegistration);
 
-        Registration foundRegistration = entityManager.find(Registration.class, newRegistration.getId());
+        Registration foundRegistration = entityManager.find(Registration.class, savedRegistration.getId());
         registrationRepository.delete(foundRegistration);
 
         Registration deleteRegistration = entityManager.find(Registration.class, newRegistration.getId());
@@ -101,18 +98,17 @@ public class RegistrationRepositoryTest {
     }
 
     private Event persistEvent() {
-        Long numberRandom = new Random().nextLong();
+        long numberRandom = new Random().nextLong();
         Event event = Event.builder()
-//                .id(10L)
-                .id(numberRandom)
-                .title("Encontro Mulheres e Carreira em Tecnologia "+numberRandom.toString())
+//                .id(numberRandom)
+                .title("Encontro Mulheres e Carreira em Tecnologia "+ Long.toString(numberRandom))
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
                 .startDate(LocalDateTime.of(2022, 3, 24, 19, 0))
                 .endDate(LocalDateTime.of(2022, 3, 24, 21, 0))
                 .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 .organizerId(3L)
                 .build();
-        return eventRepository.save(event);
+        return entityManager.persist(event);
     }
 
     public static Registration createNewRegistration(Event event) {

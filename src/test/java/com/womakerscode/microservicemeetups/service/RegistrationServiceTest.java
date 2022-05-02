@@ -6,7 +6,6 @@ import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.repository.EventRepository;
 import com.womakerscode.microservicemeetups.repository.RegistrationRepository;
-import com.womakerscode.microservicemeetups.service.impl.EventServiceImpl;
 import com.womakerscode.microservicemeetups.service.impl.RegistrationServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +30,6 @@ public class RegistrationServiceTest {
 
     RegistrationService registrationService;
 
-    EventService eventService;
-
     @MockBean
     RegistrationRepository registrationRepository;
 
@@ -42,7 +39,6 @@ public class RegistrationServiceTest {
     @BeforeEach
     public void setUp() {
         this.registrationService = new RegistrationServiceImpl(registrationRepository);
-        this.eventService = new EventServiceImpl(eventRepository);
     }
 
     @Test
@@ -206,7 +202,7 @@ public class RegistrationServiceTest {
     private Event persistEvent() {
         Long numberRandom = new Random().nextLong();
         Event event = Event.builder()
-                .id(numberRandom)
+//                .id(numberRandom)
                 .title("Encontro Mulheres e Carreira em Tecnologia "+numberRandom.toString())
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
                 .startDate(LocalDateTime.of(2022, 3, 24, 19, 0))
