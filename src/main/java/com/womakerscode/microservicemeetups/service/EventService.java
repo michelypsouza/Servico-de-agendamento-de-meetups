@@ -20,8 +20,4 @@ public interface EventService {
 
     Optional<Event> findByEventExistent(Event event);
 
-//    Optional<Event> getEventByCodeEvent(String codeEvent);
-
-//    Page<Event> getRegistrationsByEvent(Registration registration, Pageable pageable);
-
 }

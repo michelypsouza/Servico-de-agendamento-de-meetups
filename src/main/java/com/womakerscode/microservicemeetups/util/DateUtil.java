@@ -5,9 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
 
-    //public static final String DATE_TIME_PATTERN_DEFAULT = "dd-MM-yyyy HH:mm:ss";
-    //public static final String DATE_TIME_PATTERN_DEFAULT = "yyyy-MM-dd'T'HH:mm";
-    //public static final String DATE_TIME_FULL_PATTERN = "dd/MM/yyyy'T'HH:mm:ss.SSSXXX'['VV']'";
     public static final String DATE_TIME_PATTERN_DEFAULT = "dd/MM/yyyy HH:mm";
 
     public static String formatLocalDateTimeToStringWithTime(LocalDateTime localDateTime) {
