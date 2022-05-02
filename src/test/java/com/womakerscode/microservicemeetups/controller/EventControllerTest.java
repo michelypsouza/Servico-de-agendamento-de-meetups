@@ -284,7 +284,7 @@ public class EventControllerTest {
         BDDMockito.given(eventService.update(eventReturnedFromDatabaseForUpdate)).willReturn(updatedEvent);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put(EVENT_API.concat("/" + 1))
+                .put(EVENT_API.concat("/" + eventId))
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
