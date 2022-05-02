@@ -22,7 +22,7 @@ Consiste num pequeno microservice que irá ter lado de client e server no moment
 - [X] Implementação do repository
 - [X] Swagger
 - [X] Testes locais via postman
-- [ ] Deploy no azure
+- [X] Deploy no azure
 
 ## TODO ALUNAS - camada Meetup (alterei para camada Event)
 
