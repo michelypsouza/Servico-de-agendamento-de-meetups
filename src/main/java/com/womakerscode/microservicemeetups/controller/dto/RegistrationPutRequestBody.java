@@ -20,4 +20,7 @@ public class RegistrationPutRequestBody {
     @NotEmpty(message = "The name tag cannot be empty")
     private String nameTag;
 
+    @NotNull(message = "The event cannot be empty")
+    private Long participantId;
+
 }

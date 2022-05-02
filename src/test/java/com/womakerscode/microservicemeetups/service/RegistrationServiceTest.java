@@ -181,7 +181,7 @@ public class RegistrationServiceTest {
         Long numberRandom = Math.abs(new Random().nextLong());
         return Event.builder()
                 .id(numberRandom)
-                .title("Encontro Mulheres e Carreira em Tecnologia " + numberRandom.toString())
+                .title("Encontro Mulheres e Carreira em Tecnologia " + numberRandom)
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
                 .startDate(LocalDateTime.of(2022, 3, 24, 19, 0))
                 .endDate(LocalDateTime.of(2022, 3, 24, 21, 0))

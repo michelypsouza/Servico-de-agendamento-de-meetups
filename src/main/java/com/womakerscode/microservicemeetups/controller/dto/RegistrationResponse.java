@@ -21,7 +21,7 @@ public class RegistrationResponse {
     private String nameTag;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
-    private LocalDateTime dateOfRegistration;
+    private String dateOfRegistration;
 
     private Long eventId;
 //    private RegistrationEventResponse registrationEventResponse;

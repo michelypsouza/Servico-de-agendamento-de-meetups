@@ -82,6 +82,7 @@ public class RegistrationController {
         return registrationService.getRegistrationById(id)
                 .map(registration -> {
                     registration.setNameTag(registrationRequest.getNameTag());
+                    registration.setParticipantId(registrationRequest.getParticipantId());
                     registration.setEvent(event);
                     registration = registrationService.update(registration);
                     return modelMapper.map(registration, RegistrationResponse.class);
