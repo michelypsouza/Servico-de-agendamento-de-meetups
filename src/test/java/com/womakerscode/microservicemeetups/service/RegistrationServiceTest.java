@@ -178,7 +178,7 @@ public class RegistrationServiceTest {
     }
 
     private Event createValidEvent() {
-        Long numberRandom = new Random().nextLong();
+        Long numberRandom = Math.abs(new Random().nextLong());
         return Event.builder()
                 .id(numberRandom)
                 .title("Encontro Mulheres e Carreira em Tecnologia " + numberRandom.toString())

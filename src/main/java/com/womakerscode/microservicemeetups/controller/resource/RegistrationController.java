@@ -1,8 +1,8 @@
 package com.womakerscode.microservicemeetups.controller.resource;
 
-import com.womakerscode.microservicemeetups.controller.dto.RegistrationFilterDTO;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationPostRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationPutRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequestFilter;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationResponse;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
@@ -90,7 +90,7 @@ public class RegistrationController {
     }
 
     @GetMapping
-    public Page<RegistrationResponse> find(RegistrationFilterDTO dto, Pageable pageRequest) {
+    public Page<RegistrationResponse> find(RegistrationRequestFilter dto, Pageable pageRequest) {
 
         Registration filter = modelMapper.map(dto, Registration.class);
         Page<Registration> result = registrationService.find(filter, pageRequest);
@@ -102,29 +102,5 @@ public class RegistrationController {
 
         return new PageImpl<RegistrationResponse>(list, pageRequest, result.getTotalElements());
     }
-
-    //    @GetMapping
-//    //public Page<RegistrationDTO> find(RegistrationDTO dto, Pageable pageable) {
-//    public Page<RegistrationDTO> find(@RequestParam(required = false) Map<String,String> mapAttributesRegistration
-//            , Pageable pageable) {
-//
-//        RegistrationDTO dto = attributesRegistrationToDTO(mapAttributesRegistration);
-//        Registration filter = modelMapper.map(dto, Registration.class);
-//        Page<Registration> result = registrationService.find(filter, pageable);
-//
-//        List<RegistrationDTO> list = result.getContent()
-//                .stream()
-//                .map(entity -> modelMapper.map(entity, RegistrationDTO.class))
-//                .collect(Collectors.toList());
-//
-//        return new PageImpl<RegistrationDTO>(list, pageable, result.getTotalElements());
-//    }
-
-//    private RegistrationDTO attributesRegistrationToDTO(Map<String,String> mapAttributesRegistration) {
-//        final ObjectMapper mapper = new ObjectMapper();
-//        DateFormat df = new SimpleDateFormat(DateUtil.DATE_PATTERN_DEFAULT);
-//        mapper.setDateFormat(df);
-//        return mapper.convertValue(mapAttributesRegistration, RegistrationDTO.class);
-//    }
 
 }

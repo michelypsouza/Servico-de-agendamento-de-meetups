@@ -1,22 +1,29 @@
 package com.womakerscode.microservicemeetups.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.womakerscode.microservicemeetups.controller.dto.RegistrationRequestFilter;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationPostRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.RegistrationResponse;
 import com.womakerscode.microservicemeetups.controller.resource.RegistrationController;
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
+import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.service.EventService;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,7 +32,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.womakerscode.microservicemeetups.util.DateUtil.formatLocalDateTimeToStringWithTime;
 import static org.hamcrest.Matchers.hasSize;
@@ -107,7 +117,8 @@ public class RegistrationControllerTest {
     @DisplayName("Should throw an exception when try to create a new registration with an registration already created.")
     public void createRegistrationWithDuplicatedRegistration() throws Exception {
 
-        Registration registration = createNewRegistration();
+        Event event = createValidEvent();
+        Registration registration = createNewRegistration(event);
 
         RegistrationPostRequestBody dto = RegistrationPostRequestBody.builder()
                 .nameTag(registration.getNameTag())
@@ -117,7 +128,8 @@ public class RegistrationControllerTest {
 
         String json  = new ObjectMapper().writeValueAsString(dto);
 
-        Registration duplicatedRegistration = createNewRegistration();
+        Registration duplicatedRegistration = createNewRegistration(event);
+        duplicatedRegistration.setId(19L);
 
         BDDMockito.given(registrationService.findByExistingRegistrationForTheEvent(registration))
                 .willReturn(Optional.of(duplicatedRegistration));
@@ -141,7 +153,7 @@ public class RegistrationControllerTest {
     @DisplayName("Should get registration information")
     public void getRegistrationTest() throws Exception {
 
-        Registration registration = createNewRegistration();
+        Registration registration = createNewRegistration(createValidEvent());
         Long id = registration.getId();
 
         RegistrationResponse response = RegistrationResponse.builder()
@@ -275,50 +287,63 @@ public class RegistrationControllerTest {
 //        mockMvc.perform(requestBuilder)
 //                .andExpect(status().isNotFound());
 //    }
-//
-//    @Test
-//    @DisplayName("Should filter registration")
-//    public void findRegistrationTest() throws Exception {
-//
-//        Integer id = 11;
-//
-//        Registration registration = Registration.builder()
-//                .id(id)
-//                .name(createNewRegistration().getName())
-//                .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-//                .registrationNumber(createNewRegistration().getRegistrationNumber())
-//                .build();
-//
-//        BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
-//                .willReturn(new PageImpl<Registration>(Arrays.asList(registration)
-//                        , PageRequest.of(0,100), 1));
-//
-//
-//        String queryString = String.format("?name=%s&dateOfRegistration=%s&page=0&size=100",
-//        registration.getName(), formatDateToString(registration.getDateOfRegistration()));
-//
-//
-//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .get(REGISTRATION_API.concat(queryString))
-//                .accept(MediaType.APPLICATION_JSON);
-//
-//        mockMvc
-//                .perform(requestBuilder)
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("content", Matchers.hasSize(1)))
-//                .andExpect(jsonPath("totalElements"). value(1))
-//                .andExpect(jsonPath("pageable.pageSize"). value(100))
-//                .andExpect(jsonPath("pageable.pageNumber"). value(0));
-//
-//    }
 
-    private Registration createNewRegistration() {
+    @Test
+    @DisplayName("Should filter registration")
+    public void findRegistrationTest() throws Exception {
+
+        Long id = 12L;
+        Registration registration = createNewRegistration(createValidEvent());
+        RegistrationRequestFilter registrationRequestFilter = RegistrationRequestFilter.builder()
+                .id(registration.getId())
+                .nameTag(registration.getNameTag())
+                .dateOfRegistration(formatLocalDateTimeToStringWithTime(registration.getDateOfRegistration()))
+                .eventId(registration.getEvent().getId())
+                .participantId(registration.getParticipantId())
+                .build();
+
+        BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
+                .willReturn(new PageImpl<Registration>(List.of(registration)
+                        , PageRequest.of(0,100), 1));
+
+        String queryString = String.format("?nameTag=%s&dateOfRegistration=%s&participantId=%d&page=0&size=100"
+                , registrationRequestFilter.getNameTag(), registrationRequestFilter.getDateOfRegistration()
+                , registrationRequestFilter.getParticipantId());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(REGISTRATION_API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
+
+    }
+
+    private Registration createNewRegistration(Event event) {
         return Registration.builder()
                 .id(101L)
                 .nameTag("Michely Souza")
                 .dateOfRegistration(LocalDateTime.now())
-                .event(Event.builder().id(55L).build())
+                .event(event)
                 .participantId(25L)
+                .build();
+    }
+
+    private Event createValidEvent() {
+        Long numberRandom = Math.abs(new Random().nextLong());
+        return Event.builder()
+                .id(numberRandom)
+                .title("Encontro Mulheres e Carreira em Tecnologia " + numberRandom.toString())
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .startDate(LocalDateTime.of(2022, 3, 24, 19, 0))
+                .endDate(LocalDateTime.of(2022, 3, 24, 21, 0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
+                .organizerId(3L)
                 .build();
     }
 

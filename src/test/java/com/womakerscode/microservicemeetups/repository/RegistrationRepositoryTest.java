@@ -98,7 +98,7 @@ public class RegistrationRepositoryTest {
     }
 
     private Event persistEvent() {
-        long numberRandom = new Random().nextLong();
+        long numberRandom = Math.abs(new Random().nextLong());
         Event event = Event.builder()
 //                .id(numberRandom)
                 .title("Encontro Mulheres e Carreira em Tecnologia "+ Long.toString(numberRandom))

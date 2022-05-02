@@ -2,6 +2,7 @@ package com.womakerscode.microservicemeetups.controller;
 
 import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.EventPutRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.EventRequestFilter;
 import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.controller.resource.EventController;
 import com.womakerscode.microservicemeetups.exception.BusinessException;
@@ -343,13 +344,17 @@ public class EventControllerTest {
                 .eventTypeEnum(EventTypeEnum.ONLINE)
                 .organizerId(1L)
                 .build();
+        EventRequestFilter eventRequestFilter = EventRequestFilter.builder()
+                .id(event.getId())
+                .title(event.getTitle())
+                .build();
 
         BDDMockito.given(eventService.find(Mockito.any(Event.class), Mockito.any(Pageable.class)) )
                 .willReturn(new PageImpl<Event>(List.of(event)
                         , PageRequest.of(0,100), 1));
 
         String queryString = String.format("?id=%d&title=%s&page=0&size=100",
-                event.getId(), event.getTitle());
+                eventRequestFilter.getId(), eventRequestFilter.getTitle());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
