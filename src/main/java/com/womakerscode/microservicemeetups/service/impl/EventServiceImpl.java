@@ -34,7 +34,6 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id);
     }
 
-    //TODO: inserir mais uma validacao no delete();
     @Override
     public void delete(Event event) {
         if (event == null || event.getId() == null) {

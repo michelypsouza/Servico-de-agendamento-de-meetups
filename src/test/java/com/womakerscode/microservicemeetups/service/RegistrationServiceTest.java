@@ -128,6 +128,17 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @DisplayName("Should delete an registration with invalid id")
+    public void deleteEventTestInvalidId() {
+        Registration registration = Registration.builder().build();
+        Throwable exception = Assertions.catchThrowable(() -> registrationService.delete(registration));
+        Assertions.assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Registration id cannot be null");
+        Mockito.verify(registrationRepository, Mockito.never()).delete(registration);
+    }
+
+    @Test
     @DisplayName("Should update an registration")
     public  void updateRegistration() {
 
@@ -149,6 +160,17 @@ public class RegistrationServiceTest {
         assertThat(registration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
         assertThat(registration.getParticipantId()).isEqualTo(updatedRegistration.getParticipantId());
 
+    }
+
+    @Test
+    @DisplayName("Should update an registration with invalid id")
+    public void updateEventTestInvalidId() {
+        Registration registration = Registration.builder().build();
+        Throwable exception = Assertions.catchThrowable(() -> registrationService.update(registration));
+        Assertions.assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Registration id cannot be null");
+        Mockito.verify(registrationRepository, Mockito.never()).save(registration);
     }
 
     @Test

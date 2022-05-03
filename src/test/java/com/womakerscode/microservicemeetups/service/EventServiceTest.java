@@ -78,7 +78,7 @@ public class EventServiceTest {
         Mockito.when(eventRepository.findByEventExistent(Mockito.anyString(), Mockito.any(), Mockito.any(),
                 Mockito.anyLong())).thenReturn(Optional.of(event));
 
-        Throwable exception = Assertions.catchThrowable( () -> eventService.save(event));
+        Throwable exception = Assertions.catchThrowable(() -> eventService.save(event));
         assertThat(exception)
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("Event already created");
@@ -131,6 +131,17 @@ public class EventServiceTest {
     }
 
     @Test
+    @DisplayName("Should delete an event with invalid id")
+    public void deleteEventTestInvalidId() {
+        Event event = Event.builder().build();
+        Throwable exception = Assertions.catchThrowable(() -> eventService.delete(event));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event id cannot be null");
+        Mockito.verify(eventRepository, Mockito.never()).delete(event);
+    }
+
+    @Test
     @DisplayName("Should update an event")
     public void updateEvent() {
 
@@ -180,6 +191,17 @@ public class EventServiceTest {
         assertThat(result.getContent()).isEqualTo(listEvents);
         assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("Should update an event with invalid id")
+    public void updateEventTestInvalidId() {
+        Event event = Event.builder().build();
+        Throwable exception = Assertions.catchThrowable(() -> eventService.update(event));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event id cannot be null");
+        Mockito.verify(eventRepository, Mockito.never()).save(event);
     }
 
     @Test
