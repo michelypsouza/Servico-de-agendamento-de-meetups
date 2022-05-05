@@ -7,6 +7,7 @@ import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.controller.resource.EventController;
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Event;
+import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.service.EventService;
 import org.hamcrest.Matchers;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.womakerscode.microservicemeetups.util.DateUtil.formatLocalDateTimeToStringWithTime;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -231,6 +233,27 @@ public class EventControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound());
 
+    }
+
+    @Test
+    @DisplayName("Should delete the event")
+    public void cannotDeleteWhenEventHasRegistrations() throws Exception {
+
+        Event event = createNewEvent();
+        event.setId(9L);
+        event.setOrganizerId(5L);
+        event.setRegistrations(List.of(Registration.builder().id(22L).build()));
+
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.of(event));
+        BDDMockito.doThrow(new BusinessException("The event cannot be deleted as it has active registrations"))
+                .when(eventService).validateEventWithRegistrationsForDelete(any(Event.class));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(EVENT_API.concat("/" + event.getId()))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
     }
 
     @Test

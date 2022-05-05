@@ -61,6 +61,7 @@ public class EventController {
     public void delete(@PathVariable Long id) {
         Event event = eventService.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        eventService.validateEventWithRegistrationsForDelete(event);
         eventService.delete(event);
     }
 

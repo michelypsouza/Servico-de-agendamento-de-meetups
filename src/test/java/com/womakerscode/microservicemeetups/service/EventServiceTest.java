@@ -2,6 +2,7 @@ package com.womakerscode.microservicemeetups.service;
 
 import com.womakerscode.microservicemeetups.exception.BusinessException;
 import com.womakerscode.microservicemeetups.model.entity.Event;
+import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.model.enumeration.EventTypeEnum;
 import com.womakerscode.microservicemeetups.repository.EventRepository;
 import com.womakerscode.microservicemeetups.service.impl.EventServiceImpl;
@@ -139,6 +140,19 @@ public class EventServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event id cannot be null");
         Mockito.verify(eventRepository, Mockito.never()).delete(event);
+    }
+
+    @Test
+    @DisplayName("Test validate event with registrations")
+    public void testValidateEventWithRegistrationsForDelete() {
+        Event event = createValidEvent();
+        event.setRegistrations(List.of(Registration.builder().id(22L).build()));
+        //Mockito.when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+        Throwable exception = Assertions.catchThrowable(() -> eventService
+                .validateEventWithRegistrationsForDelete(event));
+        assertThat(exception)
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("The event cannot be deleted as it has active registrations");
     }
 
     @Test

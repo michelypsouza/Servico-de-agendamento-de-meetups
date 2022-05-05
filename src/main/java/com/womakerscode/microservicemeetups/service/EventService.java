@@ -14,6 +14,8 @@ public interface EventService {
 
     void delete(Event event);
 
+    void validateEventWithRegistrationsForDelete(Event event);
+
     Event update(Event event);
 
     Page<Event> find(Event filter, Pageable pageable);

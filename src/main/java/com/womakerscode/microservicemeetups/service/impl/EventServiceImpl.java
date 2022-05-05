@@ -42,6 +42,16 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
+    @Override
+    public void validateEventWithRegistrationsForDelete(Event event) {
+        //buscando lista de inscrições do evento no banco de dados
+        boolean hasRegistrationOnEvent = event.getRegistrations() != null || !event.getRegistrations().isEmpty();
+        if (hasRegistrationOnEvent) {
+            throw new BusinessException("The event cannot be deleted as it has active registrations");
+        }
+
+    }
+
     //TODO: inserir mais uma validacao no save();
     @Override
     public Event update(Event event) {
