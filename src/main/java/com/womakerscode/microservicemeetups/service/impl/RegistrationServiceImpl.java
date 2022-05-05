@@ -22,6 +22,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     public Registration save(Registration registration) {
+        // validar se participante ja esta inscrito no mesmo evento
         if (findByExistingRegistrationForTheEvent(registration).isPresent()) {
             throw new BusinessException("Registration already created");
         }
@@ -33,7 +34,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         return registrationRepository.findById(id);
     }
 
-    //TODO: inserir mais uma validacao no delete();
     @Override
     public void delete(Registration registration) {
         if (registration == null || registration.getId() == null) {
@@ -42,7 +42,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.delete(registration);
     }
 
-    //TODO: inserir mais uma validacao no save();
     @Override
     public Registration update(Registration registration) {
         if (registration == null || registration.getId() == null) {

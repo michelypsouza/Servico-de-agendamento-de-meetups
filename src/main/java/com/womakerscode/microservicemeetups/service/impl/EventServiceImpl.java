@@ -23,6 +23,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event save(Event event) {
+        // validar duplicidade no cadastro do evento
         if (existsByEvent(event)) {
             throw new BusinessException("Event already created");
         }
@@ -44,7 +45,6 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void validateEventWithRegistrationsForDelete(Event event) {
-        //buscando lista de inscrições do evento no banco de dados
         boolean hasRegistrationOnEvent = event.getRegistrations() != null || !event.getRegistrations().isEmpty();
         if (hasRegistrationOnEvent) {
             throw new BusinessException("The event cannot be deleted as it has active registrations");
@@ -52,13 +52,19 @@ public class EventServiceImpl implements EventService {
 
     }
 
-    //TODO: inserir mais uma validacao no save();
     @Override
     public Event update(Event event) {
         if (event == null || event.getId() == null) {
             throw new IllegalArgumentException("Event id cannot be null");
         }
         return eventRepository.save(event);
+    }
+
+    @Override
+    public void validateTheEventPeriod(Event event) {
+        if (event.getStartDate().isAfter(event.getEndDate())) {
+            throw new BusinessException("The event end date cannot be greater than the event start date");
+        }
     }
 
     @Override

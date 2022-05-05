@@ -42,6 +42,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventResponse create(@RequestBody @Valid EventPostRequestBody eventPostRequestBody) {
         Event entity = modelMapper.map(eventPostRequestBody, Event.class);
+        eventService.validateTheEventPeriod(entity);
         entity.setCreationDate(LocalDateTime.now());
         entity = eventService.save(entity);
         return modelMapper.map(entity, EventResponse.class);
@@ -74,6 +75,7 @@ public class EventController {
                     event.setDescription(eventPutRequestBody.getDescription());
                     event.setStartDate(convertStringToLocalDateTimeWithTime(eventPutRequestBody.getStartDate()));
                     event.setEndDate(convertStringToLocalDateTimeWithTime(eventPutRequestBody.getEndDate()));
+                    eventService.validateTheEventPeriod(event);
                     event = eventService.update(event);
                     return modelMapper.map(event, EventResponse.class);
                 })

@@ -147,7 +147,6 @@ public class EventServiceTest {
     public void testValidateEventWithRegistrationsForDelete() {
         Event event = createValidEvent();
         event.setRegistrations(List.of(Registration.builder().id(22L).build()));
-        //Mockito.when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
         Throwable exception = Assertions.catchThrowable(() -> eventService
                 .validateEventWithRegistrationsForDelete(event));
         assertThat(exception)
@@ -249,6 +248,44 @@ public class EventServiceTest {
                 .findByEventExistent(newEvent.getTitle(), newEvent.getStartDate(), newEvent.getEndDate()
                         , newEvent.getOrganizerId());
 
+    }
+
+    @Test
+    @DisplayName("Test event time period validation")
+    public void testValidateTheEventPeriodTimeInvalid() {
+        Event event = Event.builder()
+                .id(101L)
+                .title("Encontro Mulheres e Carreira em Tecnologia")
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .startDate(LocalDateTime.of(2022,3,24,21,0))
+                .endDate(LocalDateTime.of(2022,3,24,19,0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
+                .organizerId(3L)
+                .build();
+        Throwable exception = Assertions.catchThrowable(() -> eventService
+                .validateTheEventPeriod(event));
+        assertThat(exception)
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("The event end date cannot be greater than the event start date");
+    }
+
+    @Test
+    @DisplayName("Test event date period validation")
+    public void testValidateTheEventPeriodDateInvalid() {
+        Event event = Event.builder()
+                .id(101L)
+                .title("Encontro Mulheres e Carreira em Tecnologia")
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .startDate(LocalDateTime.of(2022,3,24,19,0))
+                .endDate(LocalDateTime.of(2022,3,20,21,0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
+                .organizerId(3L)
+                .build();
+        Throwable exception = Assertions.catchThrowable(() -> eventService
+                .validateTheEventPeriod(event));
+        assertThat(exception)
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("The event end date cannot be greater than the event start date");
     }
 
     private Event createValidEvent() {

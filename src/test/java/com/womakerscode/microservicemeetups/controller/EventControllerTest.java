@@ -62,8 +62,10 @@ public class EventControllerTest {
         EventPostRequestBody dto = EventPostRequestBody.builder()
                 .title("Encontro Mulheres e Carreira em Tecnologia")
                 .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
-                .startDate(formatLocalDateTimeToStringWithTime(LocalDateTime.of(2022,3,24,19,0)))
-                .endDate(formatLocalDateTimeToStringWithTime(LocalDateTime.of(2022,3,24,21,0)))
+                .startDate(formatLocalDateTimeToStringWithTime(
+                        LocalDateTime.of(2022,3,24,19,0)))
+                .endDate(formatLocalDateTimeToStringWithTime(
+                        LocalDateTime.of(2022,3,24,21,0)))
                 .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
                 .organizerId(1L)
                 .build();
@@ -152,6 +154,46 @@ public class EventControllerTest {
     }
 
     @Test
+    @DisplayName("Should return error when invalid period event")
+    public void createEventErrorPeriodInvalidTest() throws Exception {
+
+        EventPostRequestBody dto = EventPostRequestBody.builder()
+                .title("Encontro Mulheres e Carreira em Tecnologia")
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .startDate(formatLocalDateTimeToStringWithTime(
+                        LocalDateTime.of(2022,3,24,19,0)))
+                .endDate(formatLocalDateTimeToStringWithTime(
+                        LocalDateTime.of(2022,3,20,21,0)))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
+                .organizerId(1L)
+                .build();
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        Event event = Event.builder()
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .creationDate(LocalDateTime.now())
+                .startDate(LocalDateTime.of(2022,3,24,19,0))
+                .endDate(LocalDateTime.of(2022,3,20,21,0))
+                .eventTypeEnum(dto.getEventTypeEnum())
+                .organizerId(dto.getOrganizerId())
+                .build();
+
+        BDDMockito.doThrow(new BusinessException("The event end date cannot be greater than the event start date"))
+                .when(eventService).validateTheEventPeriod(any(Event.class));
+        BDDMockito.given(eventService.save(Mockito.any(Event.class))).willReturn(event);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(EVENT_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
     @DisplayName("Should get event information")
     public void getEventTest() throws Exception {
 
@@ -237,7 +279,7 @@ public class EventControllerTest {
 
     @Test
     @DisplayName("Should delete the event")
-    public void cannotDeleteWhenEventHasRegistrations() throws Exception {
+    public void cannotDeleteWhenEventHasRegistrationsTest() throws Exception {
 
         Event event = createNewEvent();
         event.setId(9L);
@@ -351,6 +393,50 @@ public class EventControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should return update error when invalid period event")
+    public void updateEventErrorPeriodInvalidTest() throws Exception {
+
+        EventPutRequestBody dto = EventPutRequestBody.builder()
+                .title("Encontro Mulheres e Carreira em Tecnologia")
+                .description("Mulheres e Carreira em Tecnologia parceria WoMakersCode e Zé Delivery")
+                .startDate(formatLocalDateTimeToStringWithTime(
+                        LocalDateTime.of(2022,3,24,19,0)))
+                .endDate(formatLocalDateTimeToStringWithTime(
+                        LocalDateTime.of(2022,3,20,21,0)))
+                .build();
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        Event updatingEvent = Event.builder()
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .creationDate(LocalDateTime.now())
+                .startDate(LocalDateTime.of(2022,3,24,19,0))
+                .endDate(LocalDateTime.of(2022,3,20,21,0))
+                .eventTypeEnum(EventTypeEnum.FACE_TO_FACE)
+                .organizerId(38L)
+                .build();
+
+        Event foundEvent = createNewEvent();
+        foundEvent.setId(updatingEvent.getId());
+        foundEvent.setOrganizerId(updatingEvent.getOrganizerId());
+
+        BDDMockito.given(eventService.getById(anyLong())).willReturn(Optional.of(foundEvent));
+        BDDMockito.doThrow(new BusinessException("The event end date cannot be greater than the event start date"))
+                .when(eventService).validateTheEventPeriod(any(Event.class));
+        BDDMockito.given(eventService.update(Mockito.any(Event.class))).willReturn(updatingEvent);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(EVENT_API.concat("/1"))
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+
     }
 
     @Test

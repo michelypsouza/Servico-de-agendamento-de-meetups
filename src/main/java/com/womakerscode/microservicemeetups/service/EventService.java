@@ -18,6 +18,8 @@ public interface EventService {
 
     Event update(Event event);
 
+    void validateTheEventPeriod(Event event);
+
     Page<Event> find(Event filter, Pageable pageable);
 
     Optional<Event> findByEventExistent(Event event);
