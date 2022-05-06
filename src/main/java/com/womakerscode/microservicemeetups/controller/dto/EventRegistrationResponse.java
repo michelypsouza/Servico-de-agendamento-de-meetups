@@ -24,10 +24,7 @@ public class EventRegistrationResponse {
 
     @NotNull(message = "The date of registration cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtil.DATE_TIME_PATTERN_DEFAULT)
-    private Date dateOfRegistration;
-
-//    @NotNull(message = "The event cannot be empty")
-//    private RegistrationEventRequest registrationEventRequest;
+    private String dateOfRegistration;
 
     @NotNull(message = "The event cannot be empty")
     private Long participantId;

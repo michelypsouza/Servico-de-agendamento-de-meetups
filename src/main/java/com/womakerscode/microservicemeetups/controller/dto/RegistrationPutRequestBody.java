@@ -14,13 +14,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class RegistrationPutRequestBody {
 
-    @NotNull(message = "The event cannot be empty")
-    private Long eventId;
-
     @NotEmpty(message = "The name tag cannot be empty")
     private String nameTag;
-
-    @NotNull(message = "The event cannot be empty")
-    private Long participantId;
 
 }

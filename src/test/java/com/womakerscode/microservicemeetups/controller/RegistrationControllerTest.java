@@ -248,8 +248,6 @@ public class RegistrationControllerTest {
                 .build();
 
         RegistrationPutRequestBody registrationPutRequestBody = RegistrationPutRequestBody.builder()
-                .eventId(putRegistration.getEvent().getId())
-                .participantId(putRegistration.getParticipantId())
                 .nameTag(putRegistration.getNameTag())
                 .build();
 
@@ -294,8 +292,6 @@ public class RegistrationControllerTest {
 
         Registration registration = createNewRegistration(createValidEvent());
         RegistrationPutRequestBody registrationPutRequestBody = RegistrationPutRequestBody.builder()
-                .eventId(registration.getEvent().getId())
-                .participantId(registration.getParticipantId())
                 .nameTag(registration.getNameTag())
                 .build();
         String json = new ObjectMapper().writeValueAsString(registrationPutRequestBody);

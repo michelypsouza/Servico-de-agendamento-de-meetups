@@ -2,10 +2,12 @@ package com.womakerscode.microservicemeetups.controller.resource;
 
 import com.womakerscode.microservicemeetups.controller.dto.EventPostRequestBody;
 import com.womakerscode.microservicemeetups.controller.dto.EventPutRequestBody;
+import com.womakerscode.microservicemeetups.controller.dto.EventRegistrationResponse;
 import com.womakerscode.microservicemeetups.controller.dto.EventRequestFilter;
 import com.womakerscode.microservicemeetups.controller.dto.EventResponse;
 import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.service.EventService;
+import com.womakerscode.microservicemeetups.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.womakerscode.microservicemeetups.util.DateUtil.convertStringToLocalDateTimeWithTime;
@@ -53,7 +56,7 @@ public class EventController {
     public EventResponse get(@PathVariable Long id) {
         return eventService
                 .getById(id)
-                .map(event -> modelMapper.map(event, EventResponse.class))
+                .map(event -> getFindEventResponse(event))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -89,8 +92,50 @@ public class EventController {
         List<EventResponse> events = result
                 .getContent()
                 .stream()
-                .map(entity -> modelMapper.map(entity, EventResponse.class)).collect(Collectors.toList());
+                .map(entity -> getFindEventResponse(entity)).collect(Collectors.toList());
+                //.map(entity -> modelMapper.map(entity, EventResponse.class)).collect(Collectors.toList());
         return new PageImpl<EventResponse>(events, pageRequest, result.getTotalElements());
+    }
+
+    private EventResponse getFindEventResponse(Event event) {
+        EventResponse eventResponse;
+        eventResponse = modelMapper.map(event, EventResponse.class);
+
+        Optional.ofNullable(event.getRegistrations()).ifPresent( registrations -> {
+            eventResponse.setRegistrations(registrations.stream().map(registration -> {
+                return EventRegistrationResponse.builder()
+                        .id(registration.getId())
+                        .nameTag(registration.getNameTag())
+                        .participantId(registration.getParticipantId())
+                        .dateOfRegistration(DateUtil.formatLocalDateTimeToStringWithTime(
+                                registration.getDateOfRegistration()))
+                        .build();
+            }).collect(Collectors.toList()));
+        });
+
+//        eventResponse.setRegistrations(
+//                Optional.ofNullable(event.getRegistrations()).get().stream().map(registration -> {
+//                    return EventRegistrationResponse.builder()
+//                            .id(registration.getId())
+//                            .nameTag(registration.getNameTag())
+//                            .participantId(registration.getParticipantId())
+//                            .dateOfRegistration(DateUtil.formatLocalDateTimeToStringWithTime(
+//                                    registration.getDateOfRegistration()))
+//                            .build();
+//                }).collect(Collectors.toList()));
+
+
+//                event.getRegistrations().stream().map(registration -> {
+//            return EventRegistrationResponse.builder()
+//                    .id(registration.getId())
+//                    .nameTag(registration.getNameTag())
+//                    .participantId(registration.getParticipantId())
+//                    .dateOfRegistration(DateUtil.formatLocalDateTimeToStringWithTime(
+//                            registration.getDateOfRegistration()))
+//                    .build();
+//        }).collect(Collectors.toList()));
+
+        return eventResponse;
     }
 
 }

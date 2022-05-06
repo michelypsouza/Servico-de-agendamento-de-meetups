@@ -84,14 +84,10 @@ public class RegistrationController {
     public RegistrationResponse update(@PathVariable Long id
             , @RequestBody @Valid RegistrationPutRequestBody registrationRequest) {
 
-        Event event = eventService.getById(registrationRequest.getEventId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-
         return registrationService.getRegistrationById(id)
                 .map(registration -> {
+                    // so pode alterar o nome do cracha
                     registration.setNameTag(registrationRequest.getNameTag());
-                    registration.setParticipantId(registrationRequest.getParticipantId());
-                    registration.setEvent(event);
                     registration = registrationService.update(registration);
                     return modelMapper.map(registration, RegistrationResponse.class);
                 })
