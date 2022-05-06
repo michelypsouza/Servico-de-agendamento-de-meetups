@@ -15,6 +15,4 @@ public class EventRequestFilter {
 
     private String title;
 
-//    private Long participantId;
-
 }

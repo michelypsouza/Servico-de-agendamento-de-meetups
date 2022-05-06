@@ -21,7 +21,6 @@ public class RegistrationResponse {
     private String dateOfRegistration;
 
     private Long eventId;
-//    private RegistrationEventResponse registrationEventResponse;
 
     private Long participantId;
 

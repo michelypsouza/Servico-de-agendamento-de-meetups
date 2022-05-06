@@ -8,6 +8,7 @@ import com.womakerscode.microservicemeetups.model.entity.Event;
 import com.womakerscode.microservicemeetups.model.entity.Registration;
 import com.womakerscode.microservicemeetups.service.EventService;
 import com.womakerscode.microservicemeetups.service.RegistrationService;
+import com.womakerscode.microservicemeetups.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -97,7 +99,16 @@ public class RegistrationController {
     @GetMapping
     public Page<RegistrationResponse> find(RegistrationRequestFilter dto, Pageable pageRequest) {
 
-        Registration filter = modelMapper.map(dto, Registration.class);
+        Registration filter = Registration.builder()
+                .id(dto.getId())
+                .nameTag(dto.getNameTag())
+                .participantId(dto.getParticipantId())
+                .event(Event.builder().id(dto.getEventId()).build())
+                .build();
+        if (dto.getDateOfRegistration() != null) {
+            filter.setDateOfRegistration(DateUtil.convertStringToLocalDateTimeWithTime(dto.getDateOfRegistration()));
+        }
+
         Page<Registration> result = registrationService.find(filter, pageRequest);
 
         List<RegistrationResponse> list = result.getContent()

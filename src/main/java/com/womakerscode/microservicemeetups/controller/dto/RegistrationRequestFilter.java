@@ -22,8 +22,6 @@ public class RegistrationRequestFilter {
 
     private Long eventId;
 
-    //private String eventTitle;
-
     private Long participantId;
 
 }

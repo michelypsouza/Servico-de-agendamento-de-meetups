@@ -93,14 +93,12 @@ public class EventController {
                 .getContent()
                 .stream()
                 .map(entity -> getFindEventResponse(entity)).collect(Collectors.toList());
-                //.map(entity -> modelMapper.map(entity, EventResponse.class)).collect(Collectors.toList());
         return new PageImpl<EventResponse>(events, pageRequest, result.getTotalElements());
     }
 
     private EventResponse getFindEventResponse(Event event) {
         EventResponse eventResponse;
         eventResponse = modelMapper.map(event, EventResponse.class);
-
         Optional.ofNullable(event.getRegistrations()).ifPresent( registrations -> {
             eventResponse.setRegistrations(registrations.stream().map(registration -> {
                 return EventRegistrationResponse.builder()
@@ -112,29 +110,6 @@ public class EventController {
                         .build();
             }).collect(Collectors.toList()));
         });
-
-//        eventResponse.setRegistrations(
-//                Optional.ofNullable(event.getRegistrations()).get().stream().map(registration -> {
-//                    return EventRegistrationResponse.builder()
-//                            .id(registration.getId())
-//                            .nameTag(registration.getNameTag())
-//                            .participantId(registration.getParticipantId())
-//                            .dateOfRegistration(DateUtil.formatLocalDateTimeToStringWithTime(
-//                                    registration.getDateOfRegistration()))
-//                            .build();
-//                }).collect(Collectors.toList()));
-
-
-//                event.getRegistrations().stream().map(registration -> {
-//            return EventRegistrationResponse.builder()
-//                    .id(registration.getId())
-//                    .nameTag(registration.getNameTag())
-//                    .participantId(registration.getParticipantId())
-//                    .dateOfRegistration(DateUtil.formatLocalDateTimeToStringWithTime(
-//                            registration.getDateOfRegistration()))
-//                    .build();
-//        }).collect(Collectors.toList()));
-
         return eventResponse;
     }
 
