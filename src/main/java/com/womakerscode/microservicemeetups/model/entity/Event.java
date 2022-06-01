@@ -48,12 +48,13 @@ public class Event {
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "event_type_enum")
     private EventTypeEnum eventTypeEnum;
 
     @Column(name = "organizer_id")
     private Long organizerId;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private List<Registration> registrations;
 
 }
